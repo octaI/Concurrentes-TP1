@@ -1,0 +1,10 @@
+#ifndef CONCURRENTES_TP1_MAIN_H
+#define CONCURRENTES_TP1_MAIN_H
+
+
+class main {
+
+};
+
+
+#endif //CONCURRENTES_TP1_MAIN_H

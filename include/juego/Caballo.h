@@ -8,10 +8,7 @@
 class Caballo : Carta {
 
 public:
-    Caballo();
-    ~Caballo();
-    Caballo(const Caballo& origen);
-    Caballo& operator= (const Caballo& origen);
+    Caballo(Palo palo);
 
 };
 

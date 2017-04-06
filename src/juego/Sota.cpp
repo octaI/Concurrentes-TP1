@@ -1,14 +1,4 @@
 
 #include "../../include/juego/Sota.h"
 
-Sota::Sota() {
-
-}
-
-Sota::~Sota() {
-
-}
-
-Sota::Sota(const Sota &origen) {
-
-}
+Sota::Sota(Palo palo) : Carta(10, palo) {}

@@ -8,10 +8,8 @@
 class Sota : Carta {
 
 public:
-    Sota();
-    ~Sota();
-    Sota(const Sota& origen);
-    Sota& operator= (const Sota& origen);
+    Sota(Palo palo);
+
 
 };
 

@@ -8,10 +8,7 @@
 class Rey : Carta {
 
 public:
-    Rey();
-    ~Rey();
-    Rey(const Rey& origen);
-    Rey& operator= (const Rey& origen);
+    Rey(Palo palo);
 
 };
 

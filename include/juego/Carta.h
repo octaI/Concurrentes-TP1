@@ -3,10 +3,16 @@
 #define CONCURRENTES_TP1_CARTA_H
 
 
+#include "Palo.h"
+
 class Carta {
 
+private:
+    char numero;
+    Palo palo;
+
 public:
-    Carta ();
+    Carta ( char numero, Palo palo );
     ~Carta ();
     Carta (const Carta& origen);
     Carta& operator= (const Carta& origen);

@@ -1,14 +1,4 @@
 
 #include "../../include/juego/Caballo.h"
 
-Caballo::Caballo() {
-
-}
-
-Caballo::~Caballo() {
-
-}
-
-Caballo::Caballo(const Caballo &origen) {
-
-}
+Caballo::Caballo(Palo palo) : Carta(11, palo) {}

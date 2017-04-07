@@ -10,7 +10,7 @@
 class Mazo {
 
 private:
-    std::stack<Carta> cartas;
+    std::stack<Carta&> cartas;
 
 public:
     Mazo ();

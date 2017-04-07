@@ -13,3 +13,7 @@ Carta::Carta(const Carta &origen) {
 Carta::~Carta() {
 
 }
+
+string Carta::jugar() {
+    return "Carta jugada!";
+}

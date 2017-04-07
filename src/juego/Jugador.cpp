@@ -1,4 +1,3 @@
-#include <cstddef>
 #include "../../include/juego/Jugador.h"
 
 Jugador::Jugador() {

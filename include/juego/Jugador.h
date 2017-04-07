@@ -4,13 +4,14 @@
 
 #include <vector>
 #include "Carta.h"
+#include "Mazo.h"
 
 using namespace std;
 
 class Jugador {
 
 private:
-    vector<Carta&> cartasEnMano;
+    vector<Carta*> cartasEnMano = vector<Carta*> (CANT_CARTAS);
 
 public:
     Jugador();

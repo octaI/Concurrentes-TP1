@@ -5,12 +5,15 @@
 #define CANT_CARTAS 40
 
 #include <stack>
+#include <vector>
 #include "Carta.h"
+
+using namespace std;
 
 class Mazo {
 
 private:
-    std::stack<Carta&> cartas;
+    vector<Carta*> cartas = vector<Carta*> (CANT_CARTAS);
 
 public:
     Mazo ();

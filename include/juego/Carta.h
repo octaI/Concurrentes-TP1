@@ -5,6 +5,8 @@
 #include <iostream>
 #include "Palo.h"
 
+using namespace std;
+
 class Carta {
 
 private:
@@ -17,7 +19,7 @@ public:
     Carta (const Carta& origen);
     Carta& operator= (const Carta& origen);
 
-    std::string jugar ();
+    virtual string jugar ();
 
 };
 

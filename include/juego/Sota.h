@@ -10,6 +10,7 @@ class Sota : Carta {
 public:
     Sota(Palo palo);
 
+    string jugar ();
 
 };
 

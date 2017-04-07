@@ -10,6 +10,7 @@ class Rey : Carta {
 public:
     Rey(Palo palo);
 
+    string jugar ();
 };
 
 

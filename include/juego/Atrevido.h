@@ -1,0 +1,11 @@
+
+#ifndef CONCURRENTES_TP1_ATREVIDO_H
+#define CONCURRENTES_TP1_ATREVIDO_H
+
+
+class Atrevido {
+
+};
+
+
+#endif //CONCURRENTES_TP1_ATREVIDO_H

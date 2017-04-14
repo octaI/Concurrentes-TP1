@@ -11,6 +11,7 @@ using namespace std;
 class Jugador {
 
 private:
+    // TODO: Deberia ser una pila (stack) en lugar de un vector.
     vector<Carta*> cartasEnPilon = vector<Carta*> (CANT_CARTAS);
 
 public:

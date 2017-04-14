@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "Jugador.h"
+#include "RegistroDeAcciones.h"
 
 using namespace std;
 
@@ -12,6 +13,7 @@ class Atrevido {
 private:
     vector<Jugador*> jugadores;
     Carta* ultimaCartaJugada = NULL;
+    RegistroDeAcciones* acciones = new RegistroDeAcciones ();
 
     void repartirCartas();
     void jugarRonda();

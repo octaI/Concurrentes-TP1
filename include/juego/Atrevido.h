@@ -2,8 +2,29 @@
 #ifndef CONCURRENTES_TP1_ATREVIDO_H
 #define CONCURRENTES_TP1_ATREVIDO_H
 
+#include <vector>
+#include "Jugador.h"
+
+using namespace std;
 
 class Atrevido {
+
+private:
+    vector<Jugador*> jugadores;
+    Carta* ultimaCartaJugada = NULL;
+
+    void repartirCartas();
+    void jugarRonda();
+    bool hayGanador();
+    void terminarPartida();
+
+public:
+    Atrevido(vector<Jugador *> jugadores);
+    ~Atrevido();
+    Atrevido(const Atrevido& origen);
+    Atrevido& operator= (const Atrevido& origen);
+
+    void jugarPartida();
 
 };
 

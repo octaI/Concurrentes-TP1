@@ -7,6 +7,7 @@
 #include <stack>
 #include <vector>
 #include "Carta.h"
+#include "Jugador.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
 
     void barajar ();
     Carta& tomarCarta ();
+    void repartirEntre (/*vector<Jugador*> jugadores*/);    // TODO: Fijarse como pasar la referencia a los jugadores de manera correcta.
 
 };
 

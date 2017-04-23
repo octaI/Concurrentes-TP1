@@ -1,7 +1,7 @@
 
 #include "../../include/logger/Logger.h"
 
-const string Logger::RUTA_BITACORA = "../../logs/";
+const string Logger::RUTA_BITACORA = "../logs/";
 const string Logger::ARCHIVO_BITACORA = RUTA_BITACORA + "log.txt";
 const string Logger::DEBUG = "debug";
 const string Logger::INFO = "info";
@@ -25,8 +25,8 @@ int Logger::escribir ( string modo, string msg ) {
     LockFile lock (ARCHIVO_BITACORA);
     lock.tomarLock();
 
-    const string log = fechaActual() + ": [" + modo + "] " + msg;
-    int resultado = lock.escribir ( static_cast<const void *>(log.c_str()), sizeof(log) );
+    const string log = fechaActual() + ": [" + modo + "] " + msg + "\n";
+    int resultado = lock.escribir ( static_cast<const void *>(log.c_str()), log.size() );
 
     lock.liberarLock();
     delete &lock;
@@ -39,10 +39,9 @@ string Logger::fechaActual() {
     struct tm * now = localtime( & t );
     return to_string(now->tm_year + 1900) + '-'
            + to_string(now->tm_mon + 1) + '-'
-           + to_string(now->tm_mday)
-           + to_string(now->tm_mday)
-           + to_string(now->tm_hour)
-           + to_string(now->tm_min)
+           + to_string(now->tm_mday) + 'T'
+           + to_string(now->tm_hour) + ':'
+           + to_string(now->tm_min) + ':'
            + to_string(now->tm_sec);
 }
 

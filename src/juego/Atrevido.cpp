@@ -61,6 +61,4 @@ void Atrevido::crearJugadores(const int nroJugadores) {
         }
     }
 
-    sleep(5);
-    Logger :: getInstance() -> debug ("Atrevido.cpp", "Fueron creados " + to_string(this->jugadores.size()) + " jugadores");
 }

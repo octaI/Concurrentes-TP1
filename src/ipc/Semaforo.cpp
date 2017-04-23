@@ -1,7 +1,7 @@
 
 #include "../../include/ipc/Semaforo.h"
 
-Semaforo :: Semaforo ( const std::string& nombre, const char letra, const int nsems, const int* valoresIniciales ) {
+Semaforo :: Semaforo ( const std::string& nombre, const char letra, const int* valoresIniciales, const int nsems ) {
     key_t clave = ftok ( nombre.c_str(), letra );
     this->id = semget ( clave,nsems,0666 | IPC_CREAT );
 

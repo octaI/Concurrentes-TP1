@@ -1,10 +1,13 @@
 #include <iostream>
-#include "../include/logger/Logger.h"
+#include "../include/juego/Atrevido.h"
 
 using namespace std;
 
-int main() {
-    cout << "Bienvenido!" << endl;
+int main(int argc, char* argv[]) {
+    cout << "Bienvenidos!" << endl;
+
+    int nroJugadores = atoi ( argv[1] );
+    Atrevido juego (nroJugadores);
 
     return 0;
 }

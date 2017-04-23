@@ -1,7 +1,8 @@
 
 #include "../../include/logger/Logger.h"
 
-const string Logger::ARCHIVO_BITACORA = "../../logs/log.txt";
+const string Logger::RUTA_BITACORA = "../../logs/";
+const string Logger::ARCHIVO_BITACORA = RUTA_BITACORA + "log.txt";
 const string Logger::DEBUG = "debug";
 const string Logger::INFO = "info";
 const string Logger::WARN = "warn";

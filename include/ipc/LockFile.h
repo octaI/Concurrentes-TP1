@@ -6,12 +6,16 @@
 #include <fcntl.h>
 #include <string>
 
+using namespace std;
+
 class LockFile {
 
 private:
     struct flock fl;
     int fd;
     std::string nombre;
+
+    int crearDirectorioSiNoExiste (string rutaCompletaArchivo);
 
 public:
     LockFile ( const std::string nombre );

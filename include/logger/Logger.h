@@ -13,6 +13,7 @@ using namespace std;
 class Logger {
 
 private:
+    static const string RUTA_BITACORA;
     static const string ARCHIVO_BITACORA;
 
     static const string DEBUG;

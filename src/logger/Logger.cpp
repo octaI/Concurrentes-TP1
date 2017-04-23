@@ -3,10 +3,10 @@
 
 const string Logger::RUTA_BITACORA = "../logs/";
 const string Logger::ARCHIVO_BITACORA = RUTA_BITACORA + "log.txt";
-const string Logger::DEBUG = "debug";
-const string Logger::INFO = "info";
-const string Logger::WARN = "warn";
-const string Logger::ERROR = "error";
+const string Logger::DEBUG = "DEBUG";
+const string Logger::INFO = "INFO";
+const string Logger::WARN = "WARN";
+const string Logger::ERROR = "ERROR";
 
 Logger* Logger :: instance = NULL;
 
@@ -21,11 +21,11 @@ Logger* Logger::getInstance() {
 
 }
 
-int Logger::escribir ( string modo, string msg ) {
+int Logger::escribir ( string modo, string tag, string msg ) {
     LockFile lock (ARCHIVO_BITACORA);
     lock.tomarLock();
 
-    const string log = fechaActual() + ": [" + modo + "] " + msg + "\n";
+    const string log = fechaActual() + " [" + modo + "] - " + tag + ": " + msg + "\n";
     int resultado = lock.escribir ( static_cast<const void *>(log.c_str()), log.size() );
 
     lock.liberarLock();
@@ -45,18 +45,18 @@ string Logger::fechaActual() {
            + to_string(now->tm_sec);
 }
 
-int Logger::debug(string msg) {
-    return escribir(DEBUG, msg);
+int Logger::debug(string tag, string msg) {
+    return escribir(DEBUG, tag, msg);
 }
 
-int Logger::info(string msg) {
-    return escribir(INFO, msg);
+int Logger::info(string tag, string msg) {
+    return escribir(INFO, tag, msg);
 }
 
-int Logger::warn(string msg) {
-    return escribir(WARN, msg);
+int Logger::warn(string tag, string msg) {
+    return escribir(WARN, tag, msg);
 }
 
-int Logger::error(string msg) {
-    return escribir(ERROR, msg);
+int Logger::error(string tag, string msg) {
+    return escribir(ERROR, tag, msg);
 }

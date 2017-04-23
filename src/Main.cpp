@@ -6,7 +6,7 @@ using namespace std;
 int main() {
     cout << "Bienvenido!" << endl;
 
-    Logger :: getInstance() -> debug("Testing logger!");
+    Logger :: getInstance() -> debug("Main", "Testing logger!");
 
     return 0;
 }

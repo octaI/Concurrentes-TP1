@@ -24,16 +24,16 @@ private:
     static Logger* instance;
     Logger ( void );
 
-    int escribir ( string modo, string msg );
+    int escribir ( string modo, string tag, string msg );
     string fechaActual ();
 
 public:
     static Logger* getInstance ();
 
-    int debug(string msg);
-    int info(string msg);
-    int warn(string msg);
-    int error(string msg);
+    int debug(string tag, string msg);
+    int info(string tag, string msg);
+    int warn(string tag, string msg);
+    int error(string tag, string msg);
 
 
 };

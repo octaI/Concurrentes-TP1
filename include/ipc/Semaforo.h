@@ -12,14 +12,18 @@ class Semaforo {
 private:
     int id;
 
-    int inicializar (int valorInicial) const;
+    int inicializar (const int nsems, const int* valoresIniciales) const;
 
 public:
-    Semaforo ( const std::string& nombre, const char letra, const int valorInicial );
+    Semaforo ( const std::string& nombre, const char letra, const int nsems, const int* valoresIniciales );
     ~Semaforo();
 
-    int p (short int count = 1) const; // decrementa
-    int v (short int count = 1) const; // incrementa
+    int p (unsigned short nsem = 0, short count = 1) const; // decrementa
+    int p (unsigned short* nsem, short count = 1) const; // decrementa para varios semaforos
+
+    int v (unsigned short nsem, short count = 1) const; // incrementa
+    int v (unsigned short* nsem, short count = 1) const; // incrementa para varios semaforos
+
     void eliminar () const;
 
 };

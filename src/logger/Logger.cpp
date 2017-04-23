@@ -21,19 +21,18 @@ Logger* Logger::getInstance() {
 
 }
 
-int Logger::escribir ( string modo, string tag, string msg ) {
+ssize_t Logger::escribir ( string modo, string tag, string msg ) {
     LockFile lock (ARCHIVO_BITACORA);
     lock.tomarLock();
 
     const string log = fechaActual() + " [" + modo + "] - " + tag + ": " + msg + "\n";
-    int resultado = lock.escribir ( static_cast<const void *>(log.c_str()), log.size() );
+    ssize_t resultado = lock.escribir ( static_cast<const void *>(log.c_str()), log.size() );
 
     lock.liberarLock();
-    delete &lock;
     return resultado;
 }
 
-// TODO: Buscar metodo para trabajar con precision de milisegundos, sino el log pierde sentido.
+// TODO: Buscar metodo para trabajar con precision de milisegundos.
 string Logger::fechaActual() {
     time_t t = time(0);
     struct tm * now = localtime( & t );
@@ -45,18 +44,18 @@ string Logger::fechaActual() {
            + to_string(now->tm_sec);
 }
 
-int Logger::debug(string tag, string msg) {
+ssize_t Logger::debug(string tag, string msg) {
     return escribir(DEBUG, tag, msg);
 }
 
-int Logger::info(string tag, string msg) {
+ssize_t Logger::info(string tag, string msg) {
     return escribir(INFO, tag, msg);
 }
 
-int Logger::warn(string tag, string msg) {
+ssize_t Logger::warn(string tag, string msg) {
     return escribir(WARN, tag, msg);
 }
 
-int Logger::error(string tag, string msg) {
+ssize_t Logger::error(string tag, string msg) {
     return escribir(ERROR, tag, msg);
 }

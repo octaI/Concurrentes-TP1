@@ -14,7 +14,6 @@ public:
     Arbitro();
     ~Arbitro();
     Arbitro(const Arbitro& origen);
-    Arbitro& operator= (const Arbitro& origen);
 
     vector<Carta> verPilonDe(Jugador& jugador);
 

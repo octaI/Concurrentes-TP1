@@ -1,9 +1,6 @@
 
 #include "../../include/juego/Atrevido.h"
 
-Atrevido::Atrevido(vector<Jugador *> jugadores) {
-    this->jugadores = jugadores;
-}
 
 Atrevido::~Atrevido() {
     for (Jugador* jugador : this->jugadores) {
@@ -12,15 +9,10 @@ Atrevido::~Atrevido() {
 }
 
 void Atrevido::jugarPartida() {
-    repartirCartas();
     while (!hayGanador()) {
         jugarRonda();
     }
     terminarPartida();
-}
-
-void Atrevido::repartirCartas() {
-
 }
 
 void Atrevido::jugarRonda() {
@@ -33,4 +25,17 @@ void Atrevido::terminarPartida() {
 
 bool Atrevido::hayGanador() {
     return false;
+}
+
+Atrevido::Atrevido(int nroJugadores) {
+    crearJugadores (nroJugadores);
+}
+
+void Atrevido::crearJugadores(int nroJugadores) {
+    // TODO: Crear los semaforos necesarios para el turno de los jugadores.
+
+    Mazo mazo;
+    mazo.barajar();
+
+    // TODO: forkear y crear jugadores, y repartir el mazo entre ellos.
 }

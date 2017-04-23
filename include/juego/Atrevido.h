@@ -15,13 +15,14 @@ private:
     Carta* ultimaCartaJugada = NULL;
     RegistroDeAcciones* acciones = new RegistroDeAcciones ();
 
-    void repartirCartas();
+    void crearJugadores (int nroJugadores);
+
     void jugarRonda();
     bool hayGanador();
     void terminarPartida();
 
 public:
-    Atrevido(vector<Jugador *> jugadores);
+    Atrevido(int nroJugadores);
     ~Atrevido();
     Atrevido(const Atrevido& origen);
     Atrevido& operator= (const Atrevido& origen);

@@ -12,10 +12,11 @@ class Jugador {
 
 private:
     // TODO: Deberia ser una pila (stack) en lugar de un vector.
-    vector<Carta*> cartasEnPilon = vector<Carta*> (CANT_CARTAS);
+    int nro;
+    vector<Carta*> cartasEnPilon;
 
 public:
-    Jugador();
+    Jugador(int nro);
     ~Jugador();
     Jugador(const Jugador& origen);
     Jugador& operator= (const Jugador& origen);

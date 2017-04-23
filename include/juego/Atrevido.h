@@ -3,10 +3,12 @@
 #define CONCURRENTES_TP1_ATREVIDO_H
 
 #include <vector>
-#include <iostream>
+#include <unistd.h>
+#include <sys/wait.h>
 #include "Jugador.h"
 #include "RegistroDeAcciones.h"
 #include "../../include/ipc/Semaforo.h"
+#include "../../include/logger/Logger.h"
 
 
 using namespace std;

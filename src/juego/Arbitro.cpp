@@ -1,8 +1,9 @@
 
 #include "../../include/juego/Arbitro.h"
 
-vector<Carta> Arbitro::verPilonDe(Jugador& jugador) {
+int Arbitro::verPilonDe(Jugador& jugador) {
     stack<Carta> pilonParaVer = jugador.mostrarPilon();
+    return pilonParaVer.size();
     //TODO: que hay que hacer con el pilon
 }
 

@@ -15,7 +15,7 @@ public:
     ~Arbitro();
     Arbitro(const Arbitro& origen);
 
-    vector<Carta> verPilonDe(Jugador& jugador);
+    int verPilonDe(Jugador& jugador);
 
 };
 

@@ -15,7 +15,7 @@ private:
     int inicializar (const int nsems, const int* valoresIniciales) const;
 
 public:
-    Semaforo ( const std::string& nombre, const char letra, const int nsems, const int* valoresIniciales );
+    Semaforo ( const std::string& nombre, const char letra, const int* valoresIniciales, const int nsems = 1 );
     ~Semaforo();
 
     int p (unsigned short nsem = 0, short count = 1) const; // decrementa

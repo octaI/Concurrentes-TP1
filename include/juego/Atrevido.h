@@ -3,8 +3,11 @@
 #define CONCURRENTES_TP1_ATREVIDO_H
 
 #include <vector>
+#include <iostream>
 #include "Jugador.h"
 #include "RegistroDeAcciones.h"
+#include "../../include/ipc/Semaforo.h"
+
 
 using namespace std;
 
@@ -15,7 +18,7 @@ private:
     Carta* ultimaCartaJugada = NULL;
     RegistroDeAcciones* acciones = new RegistroDeAcciones ();
 
-    void crearJugadores (int nroJugadores);
+    void crearJugadores (const int nroJugadores);
 
     void jugarRonda();
     bool hayGanador();

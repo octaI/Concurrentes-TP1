@@ -1,7 +1,6 @@
 
 #include "../../include/juego/Atrevido.h"
 
-
 Atrevido::~Atrevido() {
     for (Jugador* jugador : this->jugadores) {
         delete jugador;
@@ -31,8 +30,10 @@ Atrevido::Atrevido(int nroJugadores) {
     crearJugadores (nroJugadores);
 }
 
-void Atrevido::crearJugadores(int nroJugadores) {
-    // TODO: Crear los semaforos necesarios para el turno de los jugadores.
+void Atrevido::crearJugadores(const int nroJugadores) {
+    int valoresIniciales [nroJugadores];
+    valoresIniciales[0] = 1;
+    Semaforo semaforos ( "Atrevido.cpp", 'j', valoresIniciales, nroJugadores );
 
     Mazo mazo;
     mazo.barajar();

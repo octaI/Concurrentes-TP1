@@ -5,6 +5,7 @@
 #include <stack>
 #include "Carta.h"
 #include "Mazo.h"
+#include "../ipc/Pipe.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ public:
     Jugador(const Jugador& origen);
     Jugador& operator= (const Jugador& origen);
     stack<Carta> mostrarPilon();
-    Carta& jugarCarta ();
+    Carta jugarCarta ();
     int mostrarNumero();
     void tomarCarta (Carta& carta);
 };

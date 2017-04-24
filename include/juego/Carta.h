@@ -19,6 +19,9 @@ public:
     Carta (const Carta& origen);
     Carta& operator= (const Carta& origen);
 
+    static string serializar (Carta carta);
+    static Carta* deserializar (string serial);
+
     virtual string jugar ();
 
 };

@@ -27,3 +27,12 @@ Jugador::~Jugador() {
     }
 
 }
+
+Carta Jugador::jugarCarta() {
+    return Carta(1, Palo::Oro);
+    /*
+    Carta& cartaAJugar = this->cartasEnPilon.top();
+    this->cartasEnPilon.pop();
+    return cartaAJugar;
+    */
+}

@@ -2,9 +2,6 @@
 #include "../../include/juego/Atrevido.h"
 
 Atrevido::~Atrevido() {
-    for (Jugador* jugador : this->jugadores) {
-        delete jugador;
-    }
 }
 
 void Atrevido::jugarPartida() {
@@ -37,9 +34,6 @@ void Atrevido::crearJugadores(const int nroJugadores) {
     valoresIniciales[0] = 1;
     Semaforo semaforos ( "Atrevido.cpp", 'j', valoresIniciales, nroJugadores );
 
-    Mazo mazo;
-    mazo.barajar();
-
     for (int i = 0; i < nroJugadores; i++) {
         pid_t pid = fork ();
         if( pid < 0 ) {
@@ -47,17 +41,20 @@ void Atrevido::crearJugadores(const int nroJugadores) {
             exit(1);
         } else if ( pid == 0 ) {
             // Creo Jugadores hijos
+
             Logger :: getInstance() -> debug( "Atrevido.cpp",
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );
 
-            Jugador* jugador = new Jugador (i + 1);
-            this->jugadores[i] = jugador;
-
             exit(0);
         } else {
             // Administro el turno.
+
             wait ( NULL );
+
+            if (i == nroJugadores - 1) {
+
+            }
         }
     }
 

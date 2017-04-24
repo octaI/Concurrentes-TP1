@@ -9,6 +9,7 @@
 #include "RegistroDeAcciones.h"
 #include "../../include/ipc/Semaforo.h"
 #include "../../include/logger/Logger.h"
+#include "../../include/ipc/Pipe.h"
 
 
 using namespace std;
@@ -16,7 +17,6 @@ using namespace std;
 class Atrevido {
 
 private:
-    vector<Jugador*> jugadores;
     Carta* ultimaCartaJugada = NULL;
     RegistroDeAcciones* acciones = new RegistroDeAcciones ();
 

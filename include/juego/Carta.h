@@ -10,14 +10,17 @@ using namespace std;
 class Carta {
 
 private:
-    char numero;
+    int numero;
     Palo palo;
 
 public:
-    Carta ( char numero, Palo palo );
+    Carta ( int numero, Palo palo );
     ~Carta ();
     Carta (const Carta& origen);
     Carta& operator= (const Carta& origen);
+
+    int getNumero();
+    Palo getPalo();
 
     virtual string jugar ();
 

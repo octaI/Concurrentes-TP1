@@ -2,7 +2,7 @@
 #ifndef CONCURRENTES_TP1_PALO_H
 #define CONCURRENTES_TP1_PALO_H
 
-enum class Palo {
+enum Palo {
     Oro,
     Copa,
     Espada,

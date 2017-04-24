@@ -5,7 +5,7 @@
 
 #include "Carta.h"
 
-class Caballo : Carta {
+class Caballo : public Carta {
 
 public:
     Caballo(Palo palo);

@@ -7,6 +7,11 @@
 #include <stack>
 #include <vector>
 #include "Carta.h"
+#include "Siete.h"
+#include "Sota.h"
+#include "Caballo.h"
+#include "Rey.h"
+#include "Palo.h"
 #include "Jugador.h"
 
 using namespace std;
@@ -22,8 +27,10 @@ public:
     Mazo (const Mazo& origen);
     Mazo& operator= (const Mazo& origen);
 
+    void generar();
+    Carta* agarrar(int i); // TODO: Metodo de prueba, despues borrar.
     void barajar ();
-    Carta& tomarCarta ();
+    Carta tomarCarta ();
     void repartirEntre (/*vector<Jugador*> jugadores*/);    // TODO: Fijarse como pasar la referencia a los jugadores de manera correcta.
 
 };

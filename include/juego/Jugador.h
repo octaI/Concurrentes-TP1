@@ -12,7 +12,6 @@ using namespace std;
 class Jugador {
 
 private:
-    // TODO: Deberia ser una pila (stack) en lugar de un vector.
     int nro;
     stack<Carta> cartasEnPilon;
 

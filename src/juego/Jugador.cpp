@@ -36,3 +36,9 @@ Carta Jugador::jugarCarta() {
     return cartaAJugar;
     */
 }
+
+Jugador &Jugador::operator=(const Jugador &origen) {
+    this->nro = origen.nro;
+    this->cartasEnPilon = origen.cartasEnPilon;
+    return *this;
+}

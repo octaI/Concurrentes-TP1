@@ -19,10 +19,10 @@ public:
     ~Semaforo();
 
     int p (unsigned short nsem = 0, short count = 1) const; // decrementa
-    int p (unsigned short* nsem, short count = 1) const; // decrementa para varios semaforos
+    int p_multiple (unsigned short* nsem, short count = 1) const; // decrementa para varios semaforos
 
-    int v (unsigned short nsem, short count = 1) const; // incrementa
-    int v (unsigned short* nsem, short count = 1) const; // incrementa para varios semaforos
+    int v (unsigned short nsem = 0, short count = 1) const; // incrementa
+    int v_multiple (unsigned short* nsem, short count = 1) const; // incrementa para varios semaforos
 
     void eliminar () const;
 

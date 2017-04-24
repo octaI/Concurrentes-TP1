@@ -18,13 +18,12 @@ class Atrevido {
 
 private:
     Carta* ultimaCartaJugada = NULL;
+    pid_t pidPadre;
     RegistroDeAcciones* acciones = new RegistroDeAcciones ();
 
     void crearJugadores (const int nroJugadores);
 
-    void jugarRonda();
     bool hayGanador();
-    void terminarPartida();
 
 public:
     Atrevido(int nroJugadores);

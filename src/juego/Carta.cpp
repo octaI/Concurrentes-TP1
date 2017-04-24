@@ -20,7 +20,7 @@ string Carta::jugar() {
 
 string Carta::serializar(Carta carta) {
     // TODO: Serializar en serio, esto sirve para testear nomas.
-    return "carta";
+    return to_string(carta.numero);
 }
 
 Carta* Carta::deserializar(string serial) {

@@ -37,15 +37,15 @@ void Atrevido::crearJugadores(const int nroJugadores) {
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador (i + 1);
-            semaforoCreacion.p(0,1); //ya cree este jugador
+            semaforoCreacion.v(0,1); //ya cree este jugador
             break;
         }
     }
 
     if ( pid == 0 ) {
         int nroJugador = registroJugadores->devolverNumeroJugador(getpid());
-        semaforosJugadores.p(registroJugadores->devolverNumeroJugador(getpid()),1);
         Logger::getInstance()->debug("Atrevido.cpp","Acá estoy, soy el jugador "+nroJugador);
+        semaforosJugadores.p(nroJugador,1);
         Logger::getInstance()->debug("Atrevido.cpp","Jugada dummy");
         Logger::getInstance()->debug("Atrevido.cpp","Voy a avisarle al juego que ya jugué");
         semaforoAtrevido.v(0,1);

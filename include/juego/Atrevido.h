@@ -10,6 +10,7 @@
 #include "../../include/ipc/Semaforo.h"
 #include "../../include/logger/Logger.h"
 #include "../../include/ipc/Pipe.h"
+#include "../../include/juego/RegistroJugadores.h"
 
 
 using namespace std;

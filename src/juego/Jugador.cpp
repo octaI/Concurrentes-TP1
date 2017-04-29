@@ -55,18 +55,18 @@ void Jugador::jugar() {
 
 void Jugador::pasarTurno() {
     if ( nro >= cantJugadores ) {
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al primer jugador que ya es su turno." );
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al primer jugador que ya es su turno" );
         semaforosJugadores->signal(0);
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al primer jugador que es su turno." );
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al primer jugador que es su turno" );
     } else {
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador " + to_string(nro+1) + " que ya es su turno." );
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador " + to_string(nro+1) + " que ya es su turno" );
         semaforosJugadores->signal(nro);
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador " + to_string(nro+1) + " que es su turno." );
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador " + to_string(nro+1) + " que es su turno" );
     }
 }
 
 void Jugador::esperarTurno() {
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Voy a esperar a que sea mi turno para jugar." );
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Voy a esperar a que sea mi turno para jugar" );
     this->semaforosJugadores->wait(nro - 1);
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno." );
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
 }

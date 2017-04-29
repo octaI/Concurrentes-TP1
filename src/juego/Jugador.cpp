@@ -49,6 +49,7 @@ void Jugador::jugar() {
         esperarTurno();
 
         // Jugar
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon.size()) + " cartas" );
         cartasEnPilon.pop();
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
 

@@ -49,23 +49,6 @@ void Atrevido::crearJugadores(const int nroJugadores) {
         Logger::getInstance()->debug("Atrevido.cpp","Jugada dummy");
         Logger::getInstance()->debug("Atrevido.cpp","Voy a avisarle al juego que ya jugué");
         semaforoAtrevido.v(0,1);
-        /*
-        int j = 0;
-        while ( j < 1 ) {
-            semaforos.p (i);
-
-            Carta cartaJugada = jugador->jugarCarta();
-            Logger :: getInstance() -> debug( "Atrevido.cpp", "Carta jugada por Jugador " + to_string(i + 1) + ": " + Carta::serializar(cartaJugada) );
-
-            if ( i + 1 < nroJugadores ) {
-                semaforos.v ( i + 1 );
-            } else {
-                semaforos.v (0);
-            }
-
-            j++;
-        }
-        */
 
         exit (0);
 

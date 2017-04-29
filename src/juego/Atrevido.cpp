@@ -17,10 +17,8 @@ void Atrevido::crearJugadores(const int nroJugadores) {
 
     int valoresInicialesJugadores [nroJugadores];
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
-    valoresInicialesJugadores [0] = 1;
+    valoresInicialesJugadores [0] = 1;  // empieza el primer jugador
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
-
-    RegistroJugadores *registroJugadores = RegistroJugadores::getInstance();
 
     int i;
     pid_t pid;
@@ -31,7 +29,6 @@ void Atrevido::crearJugadores(const int nroJugadores) {
             Logger :: getInstance() -> error("Atrevido.cpp", "Error al crear proceso hijo para el jugador " + to_string(i + 1));
             exit(1);
         } else if ( pid == 0 ) {
-            registroJugadores->registrarJugador(getpid());
             Logger :: getInstance() -> debug( "Atrevido.cpp",
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );

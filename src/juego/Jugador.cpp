@@ -11,7 +11,7 @@ stack<Carta> Jugador::mostrarPilon() {
     return cartasEnPilon; //doy el puntero del stack
 }
 
-void Jugador::tomarCarta(Carta& carta) {
+void Jugador::tomarCarta(Carta carta) {
     cartasEnPilon.push(carta);
 }
 
@@ -45,12 +45,17 @@ Jugador &Jugador::operator=(const Jugador &origen) {
 }
 
 void Jugador::jugar() {
-    esperarTurno();
+    while ( tieneCartas() ) {
+        esperarTurno();
 
-    // Jugar
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
+        // Jugar
+        cartasEnPilon.pop();
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
 
-    pasarTurno();
+        pasarTurno();
+    }
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
+    exit(0);
 }
 
 void Jugador::pasarTurno() {
@@ -69,4 +74,8 @@ void Jugador::esperarTurno() {
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Voy a esperar a que sea mi turno para jugar" );
     this->semaforosJugadores->wait(nro - 1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
+}
+
+bool Jugador::tieneCartas() {
+    return !cartasEnPilon.empty();
 }

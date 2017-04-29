@@ -33,6 +33,13 @@ void Atrevido::crearJugadores(const int nroJugadores) {
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
+
+            // Tomo 2 cartas de ejemplo.
+            Mazo mazo;
+            mazo.generar();
+            jugador->tomarCarta(mazo.tomarCarta());
+            jugador->tomarCarta(mazo.tomarCarta());
+
             break;
         }
     }

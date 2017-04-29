@@ -34,7 +34,10 @@ Carta* Mazo::agarrar(int i) {
 }
 
 Carta Mazo::tomarCarta() {
-
+    // TODO: Usar stack!
+    Carta ultimaCarta = *cartas [cartas.size() - 1];
+    cartas.pop_back();
+    return ultimaCarta;
 }
 
 void Mazo::barajar() {

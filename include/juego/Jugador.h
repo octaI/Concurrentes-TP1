@@ -32,7 +32,9 @@ public:
     stack<Carta> mostrarPilon();
     Carta jugarCarta ();
     int mostrarNumero();
-    void tomarCarta (Carta& carta);
+    void tomarCarta (Carta carta);
+
+    bool tieneCartas();
 };
 
 

@@ -70,7 +70,7 @@ void Atrevido::crearJugadores(const int nroJugadores) {
         exit (0);
 
     } else {
-        semaforoCreacion.p(0,4);
+        semaforoCreacion.p(0, nroJugadores);
         for (int j = 0; j< nroJugadores; j++){
             Logger::getInstance()->debug("Atrevido.cpp","Voy a llamar al jugador "+to_string(j));
             semaforosJugadores.v(j,1);

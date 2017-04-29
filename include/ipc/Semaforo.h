@@ -18,11 +18,11 @@ public:
     Semaforo ( const std::string& nombre, const char letra, const int* valoresIniciales, const int nsems = 1 );
     ~Semaforo();
 
-    int p (unsigned short nsem = 0, short count = 1) const; // decrementa
-    int p_multiple (unsigned short* nsem, short count = 1) const; // decrementa para varios semaforos
+    int wait (unsigned short nsem = 0, short count = 1) const; // decrementa
+    int wait_multiple (unsigned short *nsem, short count = 1) const; // decrementa para varios semaforos
 
-    int v (unsigned short nsem = 0, short count = 1) const; // incrementa
-    int v_multiple (unsigned short* nsem, short count = 1) const; // incrementa para varios semaforos
+    int signal (unsigned short nsem = 0, short count = 1) const; // incrementa
+    int signal_multiple (unsigned short *nsem, short count = 1) const; // incrementa para varios semaforos
 
     void eliminar () const;
 

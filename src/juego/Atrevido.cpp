@@ -15,19 +15,18 @@ Atrevido::Atrevido(int nroJugadores) {
 void Atrevido::crearJugadores(const int nroJugadores) {
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
 
-    int valoresIniciales [nroJugadores] = { }; //inicializados en 0
-    int valorAtrevidoInicial [1] = {1};
-    int valorCreacionInicial [1] = {0};
-    Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresIniciales, nroJugadores );
-    Semaforo semaforoAtrevido("Atrevido.cpp",'m',valorAtrevidoInicial,1);
-    Semaforo semaforoCreacion("Atrevido.cpp",'c',valorCreacionInicial,1);
+    int valoresInicialesJugadores [nroJugadores];
+    std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
+    valoresInicialesJugadores [0] = 1;
+    Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
+
     RegistroJugadores *registroJugadores = RegistroJugadores::getInstance();
 
     int i;
     pid_t pid;
+    Jugador* jugador;
     for (i = 0; i < nroJugadores; i++) {
         pid = fork ();
-        Jugador* jugador;
         if( pid < 0 ) {
             Logger :: getInstance() -> error("Atrevido.cpp", "Error al crear proceso hijo para el jugador " + to_string(i + 1));
             exit(1);
@@ -36,38 +35,15 @@ void Atrevido::crearJugadores(const int nroJugadores) {
             Logger :: getInstance() -> debug( "Atrevido.cpp",
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );
-            jugador = new Jugador (i + 1);
-            semaforoCreacion.v(0,1); //ya cree este jugador
+            jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
             break;
         }
     }
 
     if ( pid == 0 ) {
-        int nroJugador = registroJugadores->devolverNumeroJugador(getpid());
-        Logger::getInstance()->debug("Atrevido.cpp","Acá estoy, soy el jugador "+nroJugador);
-        semaforosJugadores.p(nroJugador,1);
-        Logger::getInstance()->debug("Atrevido.cpp","Jugada dummy");
-        Logger::getInstance()->debug("Atrevido.cpp","Voy a avisarle al juego que ya jugué");
-        semaforoAtrevido.v(0,1);
-
-        exit (0);
+        jugador->jugar();
 
     } else {
-        semaforoCreacion.p(0, nroJugadores);
-        for (int j = 0; j< nroJugadores; j++){
-            Logger::getInstance()->debug("Atrevido.cpp","Voy a llamar al jugador "+to_string(j));
-            semaforosJugadores.v(j,1);
-            Logger::getInstance()->debug("Atrevido.cpp","Voy a esperar que termine su jugada el jugador "+to_string(j));
-            semaforoAtrevido.p(0,1);
-            Logger::getInstance()->debug("Atrevido.cpp","Ya termino su turno, lo freno al jugador "+to_string(j));
-            semaforosJugadores.p(j,1);
-        }
-        wait ( NULL );
-
-        Logger :: getInstance() -> debug( "Atrevido.cpp", "Termino la partida!" );
-        if(!Atrevido::hayGanador()){
-            exit (0);
-        }
 
     }
 }

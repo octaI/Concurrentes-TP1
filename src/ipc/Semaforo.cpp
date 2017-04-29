@@ -35,7 +35,7 @@ int Semaforo :: inicializar (const int nsems, const int* valoresIniciales) const
     return semaforosInicializadosOK;
 }
 
-int Semaforo :: p (unsigned short nsem, short count) const {
+int Semaforo :: wait(unsigned short nsem, short count) const {
 
     struct sembuf operacion;
 
@@ -47,7 +47,7 @@ int Semaforo :: p (unsigned short nsem, short count) const {
     return resultado;
 }
 
-int Semaforo :: v (unsigned short nsem, short count) const {
+int Semaforo :: signal(unsigned short nsem, short count) const {
 
     struct sembuf operacion;
 
@@ -63,7 +63,7 @@ void Semaforo :: eliminar () const {
     semctl ( this->id,0,IPC_RMID );
 }
 
-int Semaforo::p_multiple(unsigned short *nsem, short count) const {
+int Semaforo::wait_multiple(unsigned short *nsem, short count) const {
     size_t cant_operaciones = sizeof(nsem);
     struct sembuf operaciones [cant_operaciones];
     for (int i = 0; i < cant_operaciones; i++) {
@@ -75,7 +75,7 @@ int Semaforo::p_multiple(unsigned short *nsem, short count) const {
     return resultado;
 }
 
-int Semaforo::v_multiple(unsigned short* nsem, short count) const {
+int Semaforo::signal_multiple(unsigned short *nsem, short count) const {
     size_t cant_operaciones = sizeof(nsem);
     struct sembuf operaciones [cant_operaciones];
     for (int i = 0; i < cant_operaciones; i++) {

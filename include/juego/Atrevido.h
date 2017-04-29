@@ -22,9 +22,8 @@ private:
     pid_t pidPadre;
     RegistroDeAcciones* acciones = new RegistroDeAcciones ();
 
-    void crearJugadores (const int nroJugadores);
-
-    bool hayGanador();
+    void iniciarJugadores(const int nroJugadores);
+    void repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores);
 
 public:
     Atrevido(int nroJugadores);

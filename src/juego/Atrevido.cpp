@@ -4,15 +4,11 @@
 Atrevido::~Atrevido() {
 }
 
-bool Atrevido::hayGanador() {
-    return false;
-}
-
 Atrevido::Atrevido(int nroJugadores) {
-    crearJugadores (nroJugadores);
+    iniciarJugadores(nroJugadores);
 }
 
-void Atrevido::crearJugadores(const int nroJugadores) {
+void Atrevido::iniciarJugadores(const int nroJugadores) {
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
 
     int valoresInicialesJugadores [nroJugadores];
@@ -22,6 +18,7 @@ void Atrevido::crearJugadores(const int nroJugadores) {
 
     int i;
     pid_t pid;
+    Mazo* mazo = new Mazo ();
     Jugador* jugador;
     for (i = 0; i < nroJugadores; i++) {
         pid = fork ();
@@ -34,11 +31,7 @@ void Atrevido::crearJugadores(const int nroJugadores) {
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
 
-            // Tomo 2 cartas de ejemplo.
-            Mazo mazo;
-            mazo.generar();
-            jugador->tomarCarta(mazo.tomarCarta());
-            jugador->tomarCarta(mazo.tomarCarta());
+            repartirCartas(mazo, jugador, nroJugadores);
 
             break;
         }
@@ -49,5 +42,12 @@ void Atrevido::crearJugadores(const int nroJugadores) {
 
     } else {
 
+    }
+}
+
+void Atrevido::repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores) {
+    int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;
+    for (int i = 0; i < cartasPorJugador; i++) {
+        jugador->tomarCarta(mazo->tomarCarta());
     }
 }

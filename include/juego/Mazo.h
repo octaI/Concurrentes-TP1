@@ -21,17 +21,18 @@ class Mazo {
 private:
     vector<Carta*> cartas = vector<Carta*> (CANT_CARTAS);
 
+    void generar();
+
 public:
     Mazo ();
     ~Mazo ();
     Mazo (const Mazo& origen);
     Mazo& operator= (const Mazo& origen);
 
-    void generar();
     Carta* agarrar(int i); // TODO: Metodo de prueba, despues borrar.
     void barajar ();
     Carta tomarCarta ();
-    void repartirEntre (/*vector<Jugador*> jugadores*/);    // TODO: Fijarse como pasar la referencia a los jugadores de manera correcta.
+    int cantidadDeCartas ();
 
 };
 

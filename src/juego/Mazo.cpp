@@ -2,6 +2,7 @@
 #include "../../include/juego/Mazo.h"
 
 Mazo::Mazo() {
+    this->generar();
 }
 
 void Mazo::generar(){
@@ -53,6 +54,6 @@ Mazo::~Mazo() {
     cartas.clear();
 }
 
-void Mazo::repartirEntre() {
-
+int Mazo::cantidadDeCartas() {
+    return cartas.size();
 }

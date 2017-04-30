@@ -87,3 +87,13 @@ int Semaforo::signal_multiple(unsigned short *nsem, short count) const {
     return resultado;
 }
 
+int Semaforo::barrier(unsigned short nsem) const {
+    struct sembuf operacion;
+    operacion.sem_op = 0;
+    operacion.sem_flg = SEM_UNDO;
+
+    int resultado = semop(this->id,&operacion,1);
+
+    return resultado;
+
+}

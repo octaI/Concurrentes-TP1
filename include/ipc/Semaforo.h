@@ -24,6 +24,7 @@ public:
     int signal (unsigned short nsem = 0, short count = 1) const; // incrementa
     int signal_multiple (unsigned short *nsem, short count = 1) const; // incrementa para varios semaforos
 
+    int barrier (unsigned short nsem = 0) const; //metodo barrera para el semaforo. semop 0
     void eliminar () const;
 
 };

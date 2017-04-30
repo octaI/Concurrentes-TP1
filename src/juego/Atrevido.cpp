@@ -13,7 +13,6 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     int valoresInicialesJugadores [nroJugadores];
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
-    valoresInicialesJugadores [0] = 1;  // empieza el primer jugador
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
 
     Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
@@ -33,6 +32,10 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
             repartirCartas(mazo, jugador, nroJugadores);
+
+            if (i == 0)
+                semaforosJugadores.signal(0);   // empieza el primer jugador
+
             break;
         }
     }

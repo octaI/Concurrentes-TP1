@@ -38,7 +38,7 @@ string Logger::fechaActual() {
     struct tm * now = localtime( & t );
     return to_string(now->tm_year + 1900) + '-'
            + to_string(now->tm_mon + 1) + '-'
-           + to_string(now->tm_mday) + 'T'
+           + to_string(now->tm_mday) + " T "
            + to_string(now->tm_hour) + ':'
            + to_string(now->tm_min) + ':'
            + to_string(now->tm_sec);

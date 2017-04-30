@@ -19,7 +19,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
 
-    Semaforo semaforoAtrevido("Atrevido.cpp", 'a',valorInicialCantjugadores, 1);
+    //Semaforo semaforoAtrevido("Atrevido.cpp", 'a',valorInicialCantjugadores, 1);
     int i;
     pid_t pid;
     Mazo* mazo = new Mazo ();
@@ -43,9 +43,10 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     if ( pid == 0 ) {
         //semaforoAtrevido.barrier(0);
         jugador->jugar();
-
     } else {
-
+        wait(NULL);
+        semaforosJugadores.eliminar();
+        exit(0);
     }
 }
 

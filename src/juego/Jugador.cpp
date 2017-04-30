@@ -28,12 +28,9 @@ Jugador::~Jugador() {
 }
 
 Carta Jugador::jugarCarta() {
-    return Carta(1, Palo::Oro);
-    /*
-    Carta& cartaAJugar = this->cartasEnPilon.top();
+    Carta cartaAJugar = this->cartasEnPilon.top();
     this->cartasEnPilon.pop();
     return cartaAJugar;
-    */
 }
 
 Jugador &Jugador::operator=(const Jugador &origen) {
@@ -50,7 +47,7 @@ void Jugador::jugar() {
 
         // Jugar
         Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon.size()) + " cartas" );
-        cartasEnPilon.pop();
+        jugarCarta();
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
 
         pasarTurno();

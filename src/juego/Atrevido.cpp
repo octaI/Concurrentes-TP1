@@ -16,6 +16,9 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
     valoresInicialesJugadores [0] = 1;  // empieza el primer jugador
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
+
+    Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
+
     Semaforo semaforoAtrevido("Atrevido.cpp", 'a',valorInicialCantjugadores, 1);
     int i;
     pid_t pid;

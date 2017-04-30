@@ -61,9 +61,9 @@ void Jugador::jugar() {
 
 void Jugador::pasarTurno() {
     if ( nro >= cantJugadores ) {
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al primer jugador que ya es su turno" );
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador 1 que ya es su turno" );
         semaforosJugadores->signal(0);
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al primer jugador que es su turno" );
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador 1 que es su turno" );
     } else {
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador " + to_string(nro+1) + " que ya es su turno" );
         semaforosJugadores->signal(nro);

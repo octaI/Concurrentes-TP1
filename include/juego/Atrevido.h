@@ -11,6 +11,8 @@
 #include "../../include/logger/Logger.h"
 #include "../../include/ipc/Pipe.h"
 #include "../../include/juego/RegistroJugadores.h"
+#include "../../include/ipc/MemoriaComp.h"
+
 
 
 using namespace std;

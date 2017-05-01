@@ -1,6 +1,5 @@
 
 #include "../../include/juego/Atrevido.h"
-#include "../../include/ipc/MemoriaComp.h"
 
 Atrevido::~Atrevido() {
 }

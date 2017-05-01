@@ -44,9 +44,10 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     if ( pid == 0 ) {
         jugador->jugar();
+        delete jugador;
     } else {
         wait(NULL);
-        semaforosJugadores.eliminar();
+        delete mazo;
         exit(0);
     }
 }

@@ -74,6 +74,7 @@ void Jugador::jugar() {
         pasarTurno();
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
+    semaforosJugadores->eliminar();
     exit(0);
 }
 

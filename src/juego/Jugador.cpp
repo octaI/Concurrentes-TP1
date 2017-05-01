@@ -36,7 +36,6 @@ Jugador::~Jugador() {
 Carta* Jugador::jugarCarta() {
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
-    cout << "Carta del Palo: " << cartaAJugar->getPalo() << endl;
 
     //Memoria compartida:
     string archivo("../src/juego/Jugador.cpp");
@@ -44,7 +43,8 @@ Carta* Jugador::jugarCarta() {
     int estadoMemoria = memoria.crear(archivo, 'J');
 
     if (estadoMemoria == SHM_OK) {
-        cout << "Escribo la carta en memoria compartida con nro: " << cartaAJugar->getNumero() << endl;
+        cout << "Jugador " << nro << ": Escribo la carta en MEM COMP con Nro: " << cartaAJugar->getNumero()
+             << " y Palo: " << cartaAJugar->getPalo() << endl;
         memoria.escribir(cartaAJugar->getNumero());
         // TODO: Falta liberar memoria.
         //memoria.liberar ();
@@ -53,6 +53,20 @@ Carta* Jugador::jugarCarta() {
     }
 
     return cartaAJugar;
+}
+
+void Jugador::analizarCarta(){
+    string archivo("../src/juego/Jugador.cpp");
+    MemoriaComp<int> memoria;
+    int estadoMemoria = memoria.crear(archivo, 'J');
+    if ( estadoMemoria == SHM_OK ) {
+        int resultado = memoria.leer() ;
+        cout << "Jugador " << nro << ": Leo la carta desde MEM COMP con Nro: " << resultado << endl;
+        // TODO: Falta liberar memoria
+        //memoria . liberar () ;
+    } else {
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
+    }
 }
 
 Jugador &Jugador::operator=(const Jugador &origen) {
@@ -64,6 +78,7 @@ Jugador &Jugador::operator=(const Jugador &origen) {
 }
 
 void Jugador::jugar() {
+    //TODO: Ver donde poner el analizarCarta para que realicen la accion.
     while ( tieneCartas() ) {
         esperarTurno();
 

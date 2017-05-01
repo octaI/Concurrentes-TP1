@@ -23,6 +23,7 @@ private:
 
     void pasarTurno();
     void esperarTurno();
+    void analizarCarta();
 
 public:
     Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores);

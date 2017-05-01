@@ -10,12 +10,12 @@ Atrevido::Atrevido(int nroJugadores) {
 
 void Atrevido::iniciarJugadores(const int nroJugadores) {
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
+    Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
 
+    // Semaforos para administrar turnos
     int valoresInicialesJugadores [nroJugadores];
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
-
-    Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
 
     int i;
     pid_t pid;
@@ -34,7 +34,6 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
             jugador->obtenerPilon(pilones->at(i));
-            //repartirCartas(mazo, jugador, nroJugadores); // Se cambio por el uso de generarPilones y obtenerPilon.
 
             if (i == 0)
                 semaforosJugadores.signal(0);   // empieza el primer jugador
@@ -45,9 +44,10 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     if ( pid == 0 ) {
         jugador->jugar();
+        delete jugador;
     } else {
         wait(NULL);
-        semaforosJugadores.eliminar();
+        delete mazo;
         exit(0);
     }
 }
@@ -63,10 +63,3 @@ void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*
     }
 }
 
-void Atrevido::repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores) {
-    int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;
-    for (int i = 0; i < cartasPorJugador; i++) {
-        jugador->tomarCarta(mazo->tomarCarta());
-        cout << "Soy el jugador: " << jugador->mostrarNumero() << " - Cartas en el mazo: " << mazo->cantidadDeCartas() << endl;
-    }
-}

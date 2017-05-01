@@ -1,6 +1,5 @@
 #include "../../include/juego/Jugador.h"
-#include "../../include/ipc/MemoriaCompartida.h"
-#include "../../include/ipc/MemoriaComp.h"
+
 
 
 Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
@@ -90,6 +89,7 @@ void Jugador::jugar() {
         pasarTurno();
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
+    semaforosJugadores->eliminar();
     exit(0);
 }
 

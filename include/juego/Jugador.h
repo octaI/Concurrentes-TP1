@@ -10,6 +10,8 @@
 #include "../ipc/Pipe.h"
 #include "../ipc/Semaforo.h"
 #include "../../include/logger/Logger.h"
+#include "../../include/ipc/MemoriaCompartida.h"
+#include "../../include/ipc/MemoriaComp.h"
 
 using namespace std;
 

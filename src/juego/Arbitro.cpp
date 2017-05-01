@@ -1,13 +1,4 @@
-
 #include "../../include/juego/Arbitro.h"
-
-int Arbitro::verPilonDe(Jugador& jugador) {
-    stack<Carta*> pilonParaVer = jugador.mostrarPilon();
-    return pilonParaVer.size();
-    //TODO: que hay que hacer con el pilon
-}
-
-Arbitro::Arbitro() {
 
 int Arbitro::verCantCartasPilonDeJugador(int nroJugador) {
     char buffer[BUFFSIZE];

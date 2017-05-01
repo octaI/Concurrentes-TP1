@@ -54,5 +54,6 @@ void Atrevido::repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores) {
     int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;
     for (int i = 0; i < cartasPorJugador; i++) {
         jugador->tomarCarta(mazo->tomarCarta());
+        cout << "Soy el jugador: " << jugador->mostrarNumero() << " - Cartas en el mazo: " << mazo->cantidadDeCartas() << endl;
     }
 }

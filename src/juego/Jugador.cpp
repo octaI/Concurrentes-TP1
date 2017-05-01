@@ -32,10 +32,10 @@ Jugador::~Jugador() {
 Carta* Jugador::jugarCarta() {
     Carta* cartaAJugar = this->cartasEnPilon.top();
     this->cartasEnPilon.pop();
-    cout << "Carta del Palo: " << cartaAJugar->getPalo() << endl;
+    //cout << "Carta del Palo: " << cartaAJugar->getPalo() << endl;
 
     //Memoria compartida:
-    string archivo("../src/juego/Jugador.cpp");
+    /*string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> memoria;
     int estadoMemoria = memoria.crear(archivo, 'J');
 
@@ -46,7 +46,7 @@ Carta* Jugador::jugarCarta() {
         //memoria.liberar ();
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
-    }
+    }*/
 
     return cartaAJugar;
 }

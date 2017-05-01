@@ -5,51 +5,49 @@ Mazo::Mazo() {
     this->generar();
 }
 
-void Mazo::generar(){
+void Mazo::generar() {
     int indice = 0;
+    cartas = new stack<Carta*>();
 
-    for (int palo = Oro; palo <= Basto; palo++){
+    for (int palo = Oro; palo <= Basto; palo++) {
         int numero = 1;
-        for (numero; numero <= 6; numero++){
-            Carta* carta = new Carta(numero, Palo(palo));
-            cartas[indice] = carta;
+        for (numero; numero <= 6; numero++) {
+            Carta *carta = new Carta(numero, Palo(palo));
+            cartas->push(carta);
             indice++;
         }
 
-        Siete* siete = new Siete(Palo(palo));
-        cartas[indice++] = siete;
+        Carta* siete = new Carta(7, Palo(palo));
+        cartas->push(siete);
 
-        Sota* sota = new Sota(Palo(palo));
-        cartas[indice++] = sota;
+        Carta *sota = new Carta(10, Palo(palo));
+        cartas->push(sota);
 
-        Caballo* caballo = new Caballo(Palo(palo));
-        cartas[indice++] = caballo;
+        Carta *caballo = new Carta(11, Palo(palo));
+        cartas->push(caballo);
 
-        Rey* rey = new Rey(Palo(palo));
-        cartas[indice++] = rey;
+        Carta *rey = new Carta(12, Palo(palo));
+        cartas->push(rey);
     }
 }
 
 Carta* Mazo::tomarCarta() {
-    // TODO: Usar stack!
-    Carta* ultimaCarta = cartas [cartas.size() - 1];
-    cartas.pop_back();
+    cout << "Mazo.cpp: Cartas en el mazo ANTES de tomar carta: " << this->cantidadDeCartas() << endl;
+    Carta* ultimaCarta = cartas->top();
+    cartas->pop();
+    cout << "Mazo.cpp: Cartas en el mazo DESPUES de tomar carta: " << this->cantidadDeCartas() << endl;
+
     return ultimaCarta;
 }
 
 void Mazo::barajar() {
-
+    //TODO: mezclar el mazo de alguna forma, sino siempre se reparte lo mismo.
 }
 
 Mazo::~Mazo() {
-    //TODO: chequear esto por las dudas.
-    for (unsigned i = 0; i < cartas.size(); i++){
-        Carta* carta = cartas[i];
-        delete carta;
-    }
-    cartas.clear();
+    //TODO: se esta perdiendo memoria por todos lados
 }
 
 int Mazo::cantidadDeCartas() {
-    return cartas.size();
+    return cartas->size();
 }

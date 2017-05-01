@@ -19,7 +19,8 @@ using namespace std;
 class Mazo {
 
 private:
-    vector<Carta*> cartas = vector<Carta*> (CANT_CARTAS);
+    //vector<Carta*> cartas = vector<Carta*> (CANT_CARTAS);
+    stack<Carta*>* cartas;
 
     void generar();
 

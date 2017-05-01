@@ -14,7 +14,17 @@ Arbitro::~Arbitro() {
     }
 }
 
-Arbitro::Arbitro(Pipe** canalesConJugadores, int cantJugadores) {
+Arbitro::Arbitro(Pipe **canalesConJugadores, Semaforo* semaforoConsulta, int cantJugadores) {
     this->canalesConJugadores = canalesConJugadores;
+    this->semaforoConsulta = semaforoConsulta;
     this->cantJugadores = cantJugadores;
+}
+
+void Arbitro::consultar() {
+    semaforoConsulta->wait();
+
+    for (int i = 0; i < cantJugadores; i++) {
+        int cantCartas = verCantCartasPilonDeJugador(i);
+        Logger :: getInstance() -> info ( "Arbitro", "El jugador " + to_string(i + 1) + " tiene " + to_string(cantCartas) + " cartas" );
+    }
 }

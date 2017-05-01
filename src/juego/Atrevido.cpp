@@ -34,7 +34,6 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
             jugador->obtenerPilon(pilones->at(i));
-            //repartirCartas(mazo, jugador, nroJugadores); // Se cambio por el uso de generarPilones y obtenerPilon.
 
             if (i == 0)
                 semaforosJugadores.signal(0);   // empieza el primer jugador
@@ -63,10 +62,3 @@ void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*
     }
 }
 
-void Atrevido::repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores) {
-    int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;
-    for (int i = 0; i < cartasPorJugador; i++) {
-        jugador->tomarCarta(mazo->tomarCarta());
-        cout << "Soy el jugador: " << jugador->mostrarNumero() << " - Cartas en el mazo: " << mazo->cantidadDeCartas() << endl;
-    }
-}

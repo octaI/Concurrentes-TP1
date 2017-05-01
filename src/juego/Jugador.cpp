@@ -1,6 +1,5 @@
 #include "../../include/juego/Jugador.h"
-#include "../../include/ipc/MemoriaCompartida.h"
-#include "../../include/ipc/MemoriaComp.h"
+
 
 
 Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {

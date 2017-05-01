@@ -13,14 +13,16 @@ private:
     static const int BUFFSIZE = 2;
 
     Pipe** canalesConJugadores;
+    Semaforo* semaforoConsulta;
     int cantJugadores;
-
-public:
-    Arbitro(Pipe** canalesConJugadores, int cantJugadores);
-    ~Arbitro();
 
     int verCantCartasPilonDeJugador(int nroJugador);
 
+public:
+    Arbitro(Pipe** canalesConJugadores, Semaforo* semaforoConsulta, int cantJugadores);
+    ~Arbitro();
+
+    void consultar ();
 };
 
 

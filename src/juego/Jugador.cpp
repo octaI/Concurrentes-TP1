@@ -1,4 +1,6 @@
 #include "../../include/juego/Jugador.h"
+#include "../../include/ipc/MemoriaCompartida.h"
+#include "../../include/ipc/MemoriaComp.h"
 
 
 Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
@@ -7,11 +9,11 @@ Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
     this->semaforosJugadores = semaforosJugadores;
 }
 
-stack<Carta> Jugador::mostrarPilon() {
+stack<Carta*> Jugador::mostrarPilon() {
     return cartasEnPilon; //doy el puntero del stack
 }
 
-void Jugador::tomarCarta(Carta carta) {
+void Jugador::tomarCarta(Carta* carta) {
     cartasEnPilon.push(carta);
 }
 
@@ -21,15 +23,31 @@ int Jugador::mostrarNumero() {
 
 Jugador::~Jugador() {
     while (!cartasEnPilon.empty()){
-        Carta cartaTemp = cartasEnPilon.top();
-        delete &cartaTemp;
+        Carta* cartaTemp = cartasEnPilon.top();
+        delete cartaTemp;
     }
 
 }
 
-Carta Jugador::jugarCarta() {
-    Carta cartaAJugar = this->cartasEnPilon.top();
+Carta* Jugador::jugarCarta() {
+    Carta* cartaAJugar = this->cartasEnPilon.top();
     this->cartasEnPilon.pop();
+    cout << "Carta del Palo: " << cartaAJugar->getPalo() << endl;
+
+    //Memoria compartida:
+    string archivo("../src/juego/Jugador.cpp");
+    MemoriaComp<int> memoria;
+    int estadoMemoria = memoria.crear(archivo, 'J');
+
+    if (estadoMemoria == SHM_OK) {
+        cout << "Escribo la carta en memoria compartida con nro: " << cartaAJugar->getNumero() << endl;
+        memoria.escribir(cartaAJugar->getNumero());
+        // TODO: Falta liberar memoria.
+        //memoria.liberar ();
+    } else {
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
+    }
+
     return cartaAJugar;
 }
 

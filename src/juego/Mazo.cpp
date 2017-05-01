@@ -30,13 +30,9 @@ void Mazo::generar(){
     }
 }
 
-Carta* Mazo::agarrar(int i) {
-    return cartas[i];
-}
-
-Carta Mazo::tomarCarta() {
+Carta* Mazo::tomarCarta() {
     // TODO: Usar stack!
-    Carta ultimaCarta = *cartas [cartas.size() - 1];
+    Carta* ultimaCarta = cartas [cartas.size() - 1];
     cartas.pop_back();
     return ultimaCarta;
 }

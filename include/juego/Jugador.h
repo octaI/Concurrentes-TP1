@@ -3,6 +3,8 @@
 #define CONCURRENTES_TP1_JUGADOR_H
 
 #include <stack>
+#include <string>
+#include <iostream>
 #include "Carta.h"
 #include "Mazo.h"
 #include "../ipc/Pipe.h"
@@ -17,7 +19,7 @@ private:
     int nro;
     int cantJugadores;
     Semaforo* semaforosJugadores;
-    stack<Carta> cartasEnPilon;
+    stack<Carta*> cartasEnPilon;
 
     void pasarTurno();
     void esperarTurno();
@@ -29,10 +31,10 @@ public:
 
     void jugar ();
 
-    stack<Carta> mostrarPilon();
-    Carta jugarCarta ();
+    stack<Carta*> mostrarPilon();
+    Carta* jugarCarta ();
     int mostrarNumero();
-    void tomarCarta (Carta carta);
+    void tomarCarta (Carta* carta);
 
     bool tieneCartas();
 };

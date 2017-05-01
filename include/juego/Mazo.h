@@ -29,9 +29,8 @@ public:
     Mazo (const Mazo& origen);
     Mazo& operator= (const Mazo& origen);
 
-    Carta* agarrar(int i); // TODO: Metodo de prueba, despues borrar.
     void barajar ();
-    Carta tomarCarta ();
+    Carta* tomarCarta ();
     int cantidadDeCartas ();
 
 };

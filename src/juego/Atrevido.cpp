@@ -10,12 +10,12 @@ Atrevido::Atrevido(int nroJugadores) {
 
 void Atrevido::iniciarJugadores(const int nroJugadores) {
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
+    Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
 
+    // Semaforos para administrar turnos
     int valoresInicialesJugadores [nroJugadores];
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
-
-    Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
 
     int i;
     pid_t pid;

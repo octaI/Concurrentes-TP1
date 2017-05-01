@@ -21,6 +21,8 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     int i;
     pid_t pid;
     Mazo* mazo = new Mazo ();
+    vector<stack<Carta*>*>* pilones = new vector<stack<Carta*>*> (nroJugadores);
+    generarPilones(mazo, nroJugadores, pilones);
     Jugador* jugador;
     for (i = 0; i < nroJugadores; i++) {
         pid = fork ();
@@ -32,7 +34,8 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );
             jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
-            repartirCartas(mazo, jugador, nroJugadores);
+            jugador->obtenerPilon(pilones->at(i));
+            //repartirCartas(mazo, jugador, nroJugadores); // Se cambio por el uso de generarPilones y obtenerPilon.
 
             if (i == 0)
                 semaforosJugadores.signal(0);   // empieza el primer jugador
@@ -47,6 +50,17 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         wait(NULL);
         semaforosJugadores.eliminar();
         exit(0);
+    }
+}
+
+void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*>*>* pilones) {
+    int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;
+    for (int j = 0; j < cantJugadores; j++){
+        pilones->at(j) = new stack<Carta*>();
+        for (int i = 0; i < cartasPorJugador; i++) {
+            pilones->at(j)->push(mazo->tomarCarta());
+            cout << " - Cartas en el mazo: " << mazo->cantidadDeCartas() << endl;
+        }
     }
 }
 

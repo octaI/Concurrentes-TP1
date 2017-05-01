@@ -9,12 +9,16 @@ Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
     this->semaforosJugadores = semaforosJugadores;
 }
 
-stack<Carta*> Jugador::mostrarPilon() {
+stack<Carta*>* Jugador::mostrarPilon() {
     return cartasEnPilon; //doy el puntero del stack
 }
 
 void Jugador::tomarCarta(Carta* carta) {
-    cartasEnPilon.push(carta);
+    cartasEnPilon->push(carta);
+}
+
+void Jugador::obtenerPilon(stack<Carta*>* pilon){
+    cartasEnPilon = pilon;
 }
 
 int Jugador::mostrarNumero() {
@@ -22,20 +26,20 @@ int Jugador::mostrarNumero() {
 }
 
 Jugador::~Jugador() {
-    while (!cartasEnPilon.empty()){
-        Carta* cartaTemp = cartasEnPilon.top();
+    while (!cartasEnPilon->empty()){
+        Carta* cartaTemp = cartasEnPilon->top();
         delete cartaTemp;
     }
 
 }
 
 Carta* Jugador::jugarCarta() {
-    Carta* cartaAJugar = this->cartasEnPilon.top();
-    this->cartasEnPilon.pop();
-    //cout << "Carta del Palo: " << cartaAJugar->getPalo() << endl;
+    Carta* cartaAJugar = this->cartasEnPilon->top();
+    this->cartasEnPilon->pop();
+    cout << "Carta del Palo: " << cartaAJugar->getPalo() << endl;
 
     //Memoria compartida:
-    /*string archivo("../src/juego/Jugador.cpp");
+    string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> memoria;
     int estadoMemoria = memoria.crear(archivo, 'J');
 
@@ -46,7 +50,7 @@ Carta* Jugador::jugarCarta() {
         //memoria.liberar ();
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
-    }*/
+    }
 
     return cartaAJugar;
 }
@@ -64,7 +68,7 @@ void Jugador::jugar() {
         esperarTurno();
 
         // Jugar
-        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon.size()) + " cartas" );
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon->size()) + " cartas" );
         jugarCarta();
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
 
@@ -93,5 +97,5 @@ void Jugador::esperarTurno() {
 }
 
 bool Jugador::tieneCartas() {
-    return !cartasEnPilon.empty();
+    return !cartasEnPilon->empty();
 }

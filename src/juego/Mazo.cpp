@@ -32,10 +32,8 @@ void Mazo::generar() {
 }
 
 Carta* Mazo::tomarCarta() {
-    cout << "Mazo.cpp: Cartas en el mazo ANTES de tomar carta: " << this->cantidadDeCartas() << endl;
     Carta* ultimaCarta = cartas->top();
     cartas->pop();
-    cout << "Mazo.cpp: Cartas en el mazo DESPUES de tomar carta: " << this->cantidadDeCartas() << endl;
 
     return ultimaCarta;
 }

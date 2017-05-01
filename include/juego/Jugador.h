@@ -19,7 +19,7 @@ private:
     int nro;
     int cantJugadores;
     Semaforo* semaforosJugadores;
-    stack<Carta*> cartasEnPilon;
+    stack<Carta*>* cartasEnPilon;
 
     void pasarTurno();
     void esperarTurno();
@@ -31,10 +31,11 @@ public:
 
     void jugar ();
 
-    stack<Carta*> mostrarPilon();
+    stack<Carta*>* mostrarPilon();
     Carta* jugarCarta ();
     int mostrarNumero();
     void tomarCarta (Carta* carta);
+    void obtenerPilon(stack<Carta*>* pilon);
 
     bool tieneCartas();
 };

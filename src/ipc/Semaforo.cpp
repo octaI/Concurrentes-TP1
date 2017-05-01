@@ -63,38 +63,13 @@ void Semaforo :: eliminar () const {
     semctl ( this->id,0,IPC_RMID );
 }
 
-int Semaforo::wait_multiple(unsigned short *nsem, short count) const {
-    size_t cant_operaciones = sizeof(nsem);
-    struct sembuf operaciones [cant_operaciones];
-    for (int i = 0; i < cant_operaciones; i++) {
-        operaciones[i].sem_num = nsem[i];	// numero de semaforo
-        operaciones[i].sem_op  = -count;	// restar valor al semaforo
-        operaciones[i].sem_flg = SEM_UNDO;
-    }
-    int resultado = semop ( this->id,operaciones,cant_operaciones );
-    return resultado;
-}
-
-int Semaforo::signal_multiple(unsigned short *nsem, short count) const {
-    size_t cant_operaciones = sizeof(nsem);
-    struct sembuf operaciones [cant_operaciones];
-    for (int i = 0; i < cant_operaciones; i++) {
-        operaciones[i].sem_num = nsem[i];	// numero de semaforo
-        operaciones[i].sem_op  = count;	// sumar valor al semaforo
-        operaciones[i].sem_flg = SEM_UNDO;
-    }
-    int resultado = semop ( this->id,operaciones,cant_operaciones );
-    return resultado;
-}
-
-int Semaforo::barrier(unsigned short nsem) const {
+int Semaforo :: barrier(unsigned short nsem) const {
     struct sembuf operacion;
     operacion.sem_num = nsem;
     operacion.sem_op = 0;
     operacion.sem_flg = SEM_UNDO;
 
     int resultado = semop(this->id,&operacion,1);
-
     return resultado;
 
 }

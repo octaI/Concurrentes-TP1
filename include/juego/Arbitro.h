@@ -10,12 +10,17 @@ using namespace std;
 
 class Arbitro {
 
-public:
-    Arbitro();
-    ~Arbitro();
-    Arbitro(const Arbitro& origen);
+private:
+    static const int BUFFSIZE = 2;
 
-    int verPilonDe(Jugador& jugador);
+    Pipe** canalesConJugadores;
+    int cantJugadores;
+
+public:
+    Arbitro(Pipe** canalesConJugadores, int cantJugadores);
+    ~Arbitro();
+
+    int verCantCartasPilonDeJugador(int nroJugador);
 
 };
 

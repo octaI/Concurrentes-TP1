@@ -29,6 +29,8 @@ void Mazo::generar() {
         Carta *rey = new Carta(12, Palo(palo));
         cartas->push(rey);
     }
+
+    this->barajar();
 }
 
 Carta* Mazo::tomarCarta() {
@@ -39,11 +41,25 @@ Carta* Mazo::tomarCarta() {
 }
 
 void Mazo::barajar() {
-    //TODO: mezclar el mazo de alguna forma, sino siempre se reparte lo mismo.
+    std::srand ( unsigned ( std::time(0) ) );
+
+    vector<Carta*> cartasMezcladas [CANT_CARTAS];
+    while (!cartas->empty()) {
+        cartasMezcladas->push_back( tomarCarta() );
+    }
+    std::random_shuffle ( cartasMezcladas->begin(), cartasMezcladas->end() );
+    for (int i = 0; i < cartasMezcladas->size(); i++) {
+        Carta* cartaAAgregar = cartasMezcladas->at(i);
+        cartas->push( cartaAAgregar );
+    }
 }
 
 Mazo::~Mazo() {
-    //TODO: se esta perdiendo memoria por todos lados
+    while (!cartas->empty()) {
+        delete cartas->top();
+        cartas->pop();
+    }
+    delete cartas;
 }
 
 int Mazo::cantidadDeCartas() {

@@ -6,6 +6,7 @@
 
 #include <stack>
 #include <vector>
+#include <algorithm>
 #include "Carta.h"
 #include "Siete.h"
 #include "Sota.h"

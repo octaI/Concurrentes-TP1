@@ -2,10 +2,11 @@
 
 
 
-Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
+Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforosEscuchadores) {
     this->nro = nro;
     this->cantJugadores = cantJugadores;
     this->semaforosJugadores = semaforosJugadores;
+    this->semaforosEscuchadores = semaforosEscuchadores;
 }
 
 stack<Carta*>* Jugador::mostrarPilon() {

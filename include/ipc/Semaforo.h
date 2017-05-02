@@ -19,10 +19,13 @@ public:
     ~Semaforo();
 
     int wait (unsigned short nsem = 0, short count = 1) const; // decrementa
+    int multiple_wait (unsigned short* nsem, short* count, short cantSemaforos) const; //decrementa multiples
 
     int signal (unsigned short nsem = 0, short count = 1) const; // incrementa
+    int multiple_signal (unsigned short* nsem, short* count, short cantSemaforos) const;//incrementa multiples
 
     int barrier (unsigned short nsem = 0) const; // metodo barrera para el semaforo. semop 0
+    int multiple_barrier (unsigned short* nsem, short cantSemaforos) const; // metodo barrera multiple
 
     void eliminar () const;
 

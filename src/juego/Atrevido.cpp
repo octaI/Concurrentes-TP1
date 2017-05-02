@@ -14,8 +14,10 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     // Semaforos para administrar turnos
     int valoresInicialesJugadores [nroJugadores];
+    int valoresInicialesEscuchadores [nroJugadores] = {};
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
+    Semaforo semaforosEscuchadores("Atrevido.cpp",'e',valoresInicialesEscuchadores,nroJugadores);
 
     int i;
     pid_t pid;
@@ -32,7 +34,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
             Logger :: getInstance() -> debug( "Atrevido.cpp",
                     "Se creo correctamente el proceso para el jugador " + to_string(i + 1) + " con pid " + to_string(getpid())
                     + " (padre: " + to_string(getppid()) + ")" );
-            jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores );
+            jugador = new Jugador ( i + 1, nroJugadores, &semaforosJugadores,&semaforosEscuchadores );
             jugador->obtenerPilon(pilones->at(i));
 
             if (i == 0)

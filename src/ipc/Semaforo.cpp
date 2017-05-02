@@ -71,5 +71,44 @@ int Semaforo :: barrier(unsigned short nsem) const {
 
     int resultado = semop(this->id,&operacion,1);
     return resultado;
+}
 
+int Semaforo:: multiple_wait(unsigned short nsem[], short count[], short cantSemaforos) const{
+    int resultado;
+    struct sembuf operacion[cantSemaforos];
+    for(int i = 0; i < cantSemaforos; i++ ) {
+
+        operacion[i].sem_num = nsem[i];
+        operacion[i].sem_op = -count[i];
+        operacion[i].sem_flg = SEM_UNDO;
+
+    }
+    resultado = semop(this->id, operacion, cantSemaforos);
+    return resultado;
+    }
+
+int Semaforo:: multiple_signal(unsigned short nsem[], short count[], short cantSemaforos) const{
+    int resultado;
+    struct sembuf operacion[cantSemaforos];
+    for(int i = 0; i < cantSemaforos; i++){
+        operacion[i].sem_num = nsem[i];
+        operacion[i].sem_op = count[i];
+        operacion[i].sem_flg = SEM_UNDO;
+    }
+    resultado = semop(this->id,operacion,cantSemaforos);
+
+    return resultado;
+}
+
+int Semaforo:: multiple_barrier(unsigned short nsem[], short cantSemaforos) const{
+    int resultado;
+    struct sembuf operacion[cantSemaforos];
+    for(int i = 0; i < cantSemaforos; i++){
+        operacion[i].sem_op = 0;
+        operacion[i].sem_flg = SEM_UNDO;
+        operacion[i].sem_num = nsem[i];
+    }
+    resultado = semop(this->id,operacion,cantSemaforos);
+
+    return resultado;
 }

@@ -59,8 +59,8 @@ int Semaforo :: signal(unsigned short nsem, short count) const {
     return resultado;
 }
 
-void Semaforo :: eliminar () const {
-    semctl ( this->id,0,IPC_RMID );
+void Semaforo :: eliminar (unsigned short nsem) const { //hay que especificar cual de los semaforos queremos sacar
+    semctl ( this->id,nsem,IPC_RMID );
 }
 
 int Semaforo :: barrier(unsigned short nsem) const {

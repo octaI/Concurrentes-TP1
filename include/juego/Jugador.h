@@ -21,11 +21,13 @@ private:
     int nro;
     int cantJugadores;
     Semaforo* semaforosJugadores;
+    string archivo;
+    MemoriaComp<int> turnoActual;
+    MemoriaComp<int> nroVuelta;
 
     stack<Carta*>* cartasEnPilon;
     void pasarTurno();
     void esperarTurno();
-
     void analizarCarta();
 public:
     Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores);

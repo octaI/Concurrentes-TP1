@@ -27,7 +27,7 @@ public:
     int barrier (unsigned short nsem = 0) const; // metodo barrera para el semaforo. semop 0
     int multiple_barrier (unsigned short* nsem, short cantSemaforos) const; // metodo barrera multiple
 
-    void eliminar () const;
+    void eliminar (unsigned short nsem = 0) const;
 
 };
 

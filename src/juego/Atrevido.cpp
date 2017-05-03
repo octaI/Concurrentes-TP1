@@ -9,15 +9,21 @@ Atrevido::Atrevido(int nroJugadores) {
 }
 
 void Atrevido::iniciarJugadores(const int nroJugadores) {
-    int cant_vueltas = 0;
+    string archivo("../src/juego/Jugador.cpp");
+    MemoriaComp<int> turnoJugador;
+    MemoriaComp<int> ciclo;
+    int resultado_ciclo  = ciclo.crear(archivo,'C');
+    ciclo.escribir(1);
+    int resultado = turnoJugador.crear(archivo,'T');
+    turnoJugador.escribir(1); // numero de jugador inicial
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
     Logger :: getInstance() -> debug( "Atrevido.cpp", "Soy el PADRE Atrevido con PID: " + to_string(getpid()));
 
     // Semaforos para administrar turnos
-    int valoresInicialesJugadores [nroJugadores] = {};
+    int valoresInicialesJugadores [nroJugadores+1] = {}; //la ultima pos es un contador para el turno
     int valoresInicialesCreacion [nroJugadores] = {};
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
-    Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
+    Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores+1 );
     Semaforo semaforosCreacion("Atrevido.cpp",'c',valoresInicialesCreacion,nroJugadores);
 
     unsigned short  i;
@@ -71,8 +77,6 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     }
 
     if ( pid == 0 || pid1 == 0 ) {
-        cout << "Voy a empezar a jugar \n";
-        cout << "La barrera funca \n";
         jugador->jugar();
         delete jugador;
     } else {

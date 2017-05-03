@@ -69,7 +69,6 @@ void Jugador::analizarCarta(){
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
     }
-    //semaforosJugadores->signal(nro-1);
 }
 
 Jugador &Jugador::operator=(const Jugador &origen) {
@@ -87,10 +86,10 @@ void Jugador::jugar() {
             // Jugar
             Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon->size()) + " cartas" );
             jugarCarta();
-            notificarJugada();
+            notificarJugadaAlRestoDeLosJugadores();
 
             analizarCarta();
-            esperarAnalisisDeTodosLosJugadores();
+            esperarAnalisisDelRestoDeLosJugadores();
 
             pasarTurno();
         } else {
@@ -150,7 +149,7 @@ void Jugador::asignarTurno(int nroJugador) {
     }
 }
 
-void Jugador::notificarJugada() {
+void Jugador::notificarJugadaAlRestoDeLosJugadores() {
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar a todos los jugadores que ya realice mi jugada y pueden analizar la carta" );
     unsigned short nsem [cantJugadores - 1];
     short count [cantJugadores - 1];
@@ -166,7 +165,7 @@ void Jugador::notificarJugada() {
     semaforosJugadores->multiple_signal(nsem, count, cantJugadores - 1);
 }
 
-void Jugador::esperarAnalisisDeTodosLosJugadores() {
+void Jugador::esperarAnalisisDelRestoDeLosJugadores() {
     unsigned short nsem [cantJugadores - 1];
     short count [cantJugadores - 1];
     int k = 0;

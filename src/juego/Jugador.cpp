@@ -2,11 +2,11 @@
 
 
 
-Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforosEscuchadores) {
+Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforosAnalisis) {
     this->nro = nro;
     this->cantJugadores = cantJugadores;
     this->semaforosJugadores = semaforosJugadores;
-    this->semaforosEscuchadores = semaforosEscuchadores;
+    this->semaforosAnalisis = semaforosAnalisis;
 }
 
 stack<Carta*>* Jugador::mostrarPilon() {
@@ -76,6 +76,7 @@ Jugador &Jugador::operator=(const Jugador &origen) {
     this->cantJugadores = origen.cantJugadores;
     this->cartasEnPilon = origen.cartasEnPilon;
     this->semaforosJugadores = origen.semaforosJugadores;
+    this->semaforosAnalisis = origen.semaforosAnalisis;
     return *this;
 }
 
@@ -94,27 +95,29 @@ void Jugador::jugar() {
             pasarTurno();
         } else {
             analizarCarta();
-            semaforosJugadores->signal(nro - 1);
+            semaforosAnalisis->signal(nro - 1);
             sleep(1);
         }
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
     semaforosJugadores->eliminar();
+    semaforosAnalisis->eliminar();
     exit(0);
 }
 
 void Jugador::pasarTurno() {
     if ( nro >= cantJugadores ) {
-        semaforosJugadores->signal(0);
         asignarTurno(1);
+        semaforosJugadores->signal(0);
     } else {
-        semaforosJugadores->signal(nro);
         asignarTurno(nro + 1);
+        semaforosJugadores->signal(nro);
     }
 }
 
 void Jugador::esperarTurno() {
     this->semaforosJugadores->wait(nro - 1);
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
 }
 
 bool Jugador::tieneCartas() {
@@ -177,6 +180,6 @@ void Jugador::esperarAnalisisDelRestoDeLosJugadores() {
             k++;
         }
     }
-    semaforosJugadores->multiple_wait(nsem, count, cantJugadores - 1);
+    semaforosAnalisis->multiple_wait(nsem, count, cantJugadores - 1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Todos los jugadores analizaron mi carta jugada" );
 }

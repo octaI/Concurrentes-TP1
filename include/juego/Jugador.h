@@ -22,12 +22,15 @@ private:
     int cantJugadores;
     Semaforo* semaforosJugadores;
     Semaforo *semaforosEscuchadores;
-
     stack<Carta*>* cartasEnPilon;
+
     void pasarTurno();
     void esperarTurno();
-
     void analizarCarta();
+    void notificarJugada();
+    bool esMiTurno();
+    void asignarTurno(int nroJugador);
+
 public:
     Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforosEscuchadores);
     ~Jugador();

@@ -78,16 +78,21 @@ Jugador &Jugador::operator=(const Jugador &origen) {
 }
 
 void Jugador::jugar() {
-    //TODO: Ver donde poner el analizarCarta para que realicen la accion.
     while ( tieneCartas() ) {
         esperarTurno();
+        if ( esMiTurno() ) {
+            // Jugar
+            Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon->size()) + " cartas" );
+            jugarCarta();
+            Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
+            notificarJugada();
 
-        // Jugar
-        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon->size()) + " cartas" );
-        jugarCarta();
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
+            analizarCarta();
 
-        pasarTurno();
+            pasarTurno();
+        } else {
+            analizarCarta();
+        }
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
     semaforosJugadores->eliminar();
@@ -98,10 +103,12 @@ void Jugador::pasarTurno() {
     if ( nro >= cantJugadores ) {
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador 1 que ya es su turno" );
         semaforosJugadores->signal(0);
+        asignarTurno(1);
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador 1 que es su turno" );
     } else {
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador " + to_string(nro+1) + " que ya es su turno" );
         semaforosJugadores->signal(nro);
+        asignarTurno(nro + 1);
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador " + to_string(nro+1) + " que es su turno" );
     }
 }
@@ -114,4 +121,47 @@ void Jugador::esperarTurno() {
 
 bool Jugador::tieneCartas() {
     return !cartasEnPilon->empty();
+}
+
+bool Jugador::esMiTurno() {
+    string archivo("../src/juego/Jugador.cpp");
+    MemoriaComp<int> memoria;
+    int estadoMemoria = memoria.crear(archivo, 'T');
+    if ( estadoMemoria == SHM_OK ) {
+        int nroJugadorTurno = memoria.leer() ;
+        cout << "Jugador " << nro << ": Leo desde MEM COMP que es el turno del jugador con nro: " << nroJugadorTurno << endl;
+        return nroJugadorTurno == nro;
+    } else {
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
+        return false;
+    }
+}
+
+void Jugador::asignarTurno(int nroJugador) {
+    string archivo("../src/juego/Jugador.cpp");
+    MemoriaComp<int> memoria;
+    int estadoMemoria = memoria.crear(archivo, 'T');
+    if ( estadoMemoria == SHM_OK ) {
+        memoria.escribir(nroJugador) ;
+        cout << "Jugador " << nro << ": Escribo en MEM COMP que es el turno del jugador con nro: " << nroJugador << endl;
+    } else {
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
+    }
+}
+
+void Jugador::notificarJugada() {
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar a todos los jugadores que ya realice mi jugada y pueden analizar la carta" );
+    unsigned short nsem [cantJugadores];
+    for (unsigned short i = 0; i < cantJugadores; i++) {
+        nsem [i] = i;
+    }
+    short count [cantJugadores];
+    for (short j = 0; j < cantJugadores; j++) {
+        if ( j == (nro - 1) )
+            count [j] = 0;
+        else
+            count [j] = 1;
+    }
+    semaforosJugadores->multiple_signal(nsem, count, cantJugadores);
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise a los jugadores que revisen la carta que jugue" );
 }

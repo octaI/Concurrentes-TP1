@@ -17,16 +17,16 @@ void Mazo::generar() {
             indice++;
         }
 
-        Carta* siete = new Carta(7, Palo(palo));
+        Carta* siete = new Siete(Palo(palo));
         cartas->push(siete);
 
-        Carta *sota = new Carta(10, Palo(palo));
+        Carta *sota = new Sota(Palo(palo));
         cartas->push(sota);
 
-        Carta *caballo = new Carta(11, Palo(palo));
+        Carta *caballo = new Caballo(Palo(palo));
         cartas->push(caballo);
 
-        Carta *rey = new Carta(12, Palo(palo));
+        Carta *rey = new Rey(Palo(palo));
         cartas->push(rey);
     }
 

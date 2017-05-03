@@ -57,7 +57,6 @@ Carta* Jugador::jugarCarta() {
 }
 
 void Jugador::analizarCarta(){
-    Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Voy a analizar la carta" );
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> memoria;
     int estadoMemoria = memoria.crear(archivo, 'J');
@@ -88,27 +87,10 @@ void Jugador::jugar() {
             // Jugar
             Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon->size()) + " cartas" );
             jugarCarta();
-            Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
             notificarJugada();
 
             analizarCarta();
-            unsigned short nsem [cantJugadores - 1];
-            int k = 0;
-            for (unsigned short i = 0; i < cantJugadores; i++) {
-                if ( i != (nro - 1) )
-                    nsem [i - k] = i;
-                else
-                    k++;
-            }
-            short count [cantJugadores - 1];
-            int h = 0;
-            for (short j = 0; j < cantJugadores; j++) {
-                if ( j != (nro - 1) )
-                    count [j - h] = 1;
-                else
-                    h++;
-            }
-            semaforosJugadores->multiple_wait(nsem, count, cantJugadores - 1);
+            esperarAnalisisDeTodosLosJugadores();
 
             pasarTurno();
         } else {
@@ -123,22 +105,16 @@ void Jugador::jugar() {
 
 void Jugador::pasarTurno() {
     if ( nro >= cantJugadores ) {
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador 1 que ya es su turno" );
         semaforosJugadores->signal(0);
         asignarTurno(1);
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador 1 que es su turno" );
     } else {
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar al jugador " + to_string(nro+1) + " que ya es su turno" );
         semaforosJugadores->signal(nro);
         asignarTurno(nro + 1);
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise al jugador " + to_string(nro+1) + " que es su turno" );
     }
 }
 
 void Jugador::esperarTurno() {
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Voy a esperar a que sea mi turno para jugar" );
     this->semaforosJugadores->wait(nro - 1);
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
 }
 
 bool Jugador::tieneCartas() {
@@ -152,6 +128,7 @@ bool Jugador::esMiTurno() {
     if ( estadoMemoria == SHM_OK ) {
         int nroJugadorTurno = memoria.leer() ;
         cout << "Jugador " << nro << ": Leo desde MEM COMP que es el turno del jugador con nro: " << nroJugadorTurno << endl;
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Es el turno del jugador " + to_string(nroJugadorTurno) );
         return nroJugadorTurno == nro;
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
@@ -166,6 +143,7 @@ void Jugador::asignarTurno(int nroJugador) {
     if ( estadoMemoria == SHM_OK ) {
         memoria.escribir(nroJugador) ;
         cout << "Jugador " << nro << ": Escribo en MEM COMP que es el turno del jugador con nro: " << nroJugador << endl;
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le asigno el siguiente turno al jugador " + to_string(nroJugador) );
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
     }
@@ -190,5 +168,25 @@ void Jugador::notificarJugada() {
             h++;
     }
     semaforosJugadores->multiple_signal(nsem, count, cantJugadores - 1);
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise a los jugadores que revisen la carta que jugue" );
+}
+
+void Jugador::esperarAnalisisDeTodosLosJugadores() {
+    unsigned short nsem [cantJugadores - 1];
+    int k = 0;
+    for (unsigned short i = 0; i < cantJugadores; i++) {
+        if ( i != (nro - 1) )
+            nsem [i - k] = i;
+        else
+            k++;
+    }
+    short count [cantJugadores - 1];
+    int h = 0;
+    for (short j = 0; j < cantJugadores; j++) {
+        if ( j != (nro - 1) )
+            count [j - h] = 1;
+        else
+            h++;
+    }
+    semaforosJugadores->multiple_wait(nsem, count, cantJugadores - 1);
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Todos los jugadores analizaron mi carta jugada" );
 }

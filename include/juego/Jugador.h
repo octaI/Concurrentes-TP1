@@ -28,6 +28,7 @@ private:
     void esperarTurno();
     void analizarCarta();
     void notificarJugada();
+    void esperarAnalisisDeTodosLosJugadores();
     bool esMiTurno();
     void asignarTurno(int nroJugador);
 

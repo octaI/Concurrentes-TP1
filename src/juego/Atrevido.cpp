@@ -49,7 +49,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         cout<< "Soy "<< getpid() << "y me voy a habilitar el primer turno\n";
         semaforosCreacion.wait(0,nroJugadores);
         semaforosJugadores.signal(0);
-        cout << "Soy "<< getpid() << "y ya me habilite el turno\n";
+        cout << "Soy "<< getpid() << "y ya me habilite el turno\n" <<endl;
     } else{
 
         for (i = 1; i < nroJugadores; i++) {

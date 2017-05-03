@@ -70,9 +70,9 @@ void Jugador::analizarCarta(){
     int estadoMemoria = memoria.crear(archivo, 'J');
     if ( estadoMemoria == SHM_OK ) {
         int resultado = memoria.leer() ;
+        cout << "Jugador " << nro << " lee la carta " << resultado << " que jugo el jugador " << turnoActual.leer() << endl;
         Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Leo la carta desde MEM COMP con Nro: " + to_string(resultado) + " del JUGADOR " + to_string(turnoActual.leer()));
-        this->semaforosJugadores->signal(cantJugadores);
-        cout << "Jugador " << nro << ": Le subi al semaforo de turno" << endl;
+        semaforosJugadores->signal(cantJugadores,1);
         // TODO: Falta liberar memoria
         //memoria . liberar () ;
     } else {
@@ -92,26 +92,34 @@ void Jugador::jugar() {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoActual;
     int estadoTurno = turnoActual.crear(archivo,'T');
+    unsigned short jugadoresQueDebenEsperar[cantJugadores-1] = {};
+    short valores[cantJugadores-1] = {};
+    fill_n(valores,cantJugadores-1,1);
     int turno = turnoActual.leer(); // que jugador debe jugar
     //TODO: Ver donde poner el analizarCarta para que realicen la accion.
     while ( tieneCartas() ) {
-        turno = turnoActual.leer(); // que jugador debe jugar
-        if (this->nro != turno){
-            esperarTurno();
-            cout << "Voy a analizar la carta porque soy el jugador : " << this->nro << " es el turno de jugar de " << turno << "\n";
+        esperarTurno();
+        if (this->nro != turnoActual.leer()){
+            cout << "Voy a analizar la carta porque soy el jugador : " << this->nro << " es el turno de jugar de " << turnoActual.leer() << "\n";
             analizarCarta();
         }else {
 
             // Jugar
+
             Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Tengo " + to_string(cartasEnPilon->size()) + " cartas" );
             jugarCarta();
             Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya hice mi jugada" );
+            int k = 0;
             for (int j = 0; j < cantJugadores ; j++){
                 if ((j+1) != nro){
                     cout << "Soy el jugador : " << this->nro << " y le digo al jugador " << j + 1 << " que puede leer " << endl;
-                    semaforosJugadores->signal(j);//le doy permiso a los demas jugadores para que lean
+                    jugadoresQueDebenEsperar[k] = j;
+                    k++;
                 }
             }
+            cout << "Destrabe a los otros jugadores" << endl;
+            cout << "La op devuelve: " << semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1) << endl;
+
             pasarTurno();
             Logger::getInstance() -> debug ("Jugador " + to_string(nro), " Ya pase el turno");
         }
@@ -124,9 +132,10 @@ void Jugador::jugar() {
 }
 
 void Jugador::pasarTurno() {
-    semaforosJugadores->wait(cantJugadores,cantJugadores-1); // espero a que pasen todos
     string archivo("../src/juego/Jugador.cpp");
+    semaforosJugadores->wait(cantJugadores,cantJugadores-1);
     cout << "Soy el jugador : " << this->nro << "y le voy a pasar el turno a " << this->nro + 1 << endl;
+    cout << "Se supone ya leyeron todos los jugadores" << endl;
     MemoriaComp<int> turnoActual;
     int resTurno = turnoActual.crear(archivo,'T');
     if ( nro >= cantJugadores ) {
@@ -148,11 +157,14 @@ void Jugador::esperarTurno() {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoActual;
     int resTurno = turnoActual.crear(archivo,'T');
+    if (turnoActual.leer() != nro){
+        cout << "Soy el jugador " << this->nro << " y me toca esperar al jugador " << turnoActual.leer() <<  endl;
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Voy a esperar a que sea mi turno para jugar" );
+        this->semaforosJugadores->wait(nro - 1);
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
 
-    cout << "Soy el jugador " << this->nro << " y me toca esperar al jugador " << turnoActual.leer() <<  endl;
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Voy a esperar a que sea mi turno para jugar" );
-    this->semaforosJugadores->wait(nro - 1);
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
+    }
+
 }
 
 bool Jugador::tieneCartas() {

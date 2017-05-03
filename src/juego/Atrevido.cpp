@@ -15,23 +15,17 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     // Semaforos para administrar turnos
     int valoresInicialesJugadores [nroJugadores] = {};
-    int valoresInicialesEscuchadores [nroJugadores] = {};
     int valoresInicialesCreacion [nroJugadores] = {};
-    int valoresListeners [nroJugadores] = {};
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores );
-    Semaforo semaforosEscuchadores("Atrevido.cpp",'e',valoresInicialesEscuchadores,nroJugadores);
     Semaforo semaforosCreacion("Atrevido.cpp",'c',valoresInicialesCreacion,nroJugadores);
-    Semaforo semaforosListeners("Atrevido.cpp",'l',valoresListeners,nroJugadores);
 
     unsigned short  i;
     pid_t pid;
-    pid_t pidListener;
     Mazo* mazo = new Mazo ();
     vector<stack<Carta*>*>* pilones = new vector<stack<Carta*>*> (nroJugadores);
     generarPilones(mazo, nroJugadores, pilones);
     Jugador* jugador;
-    EscuchadorJugador* listenerJugador;
     semaforosCreacion.signal(0);
     pid_t pid1 = fork();
     if (pid1 < 0){
@@ -43,11 +37,11 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                      "Se creo correctamente el proceso para el jugador " + to_string(1) +
                                      " con pid " + to_string(getpid())
                                      + " (padre: " + to_string(getppid()) + ")");
-        jugador = new Jugador( 1, nroJugadores, &semaforosJugadores, &semaforosEscuchadores);
+        jugador = new Jugador( 1, nroJugadores, &semaforosJugadores);
         jugador->obtenerPilon(pilones->at(0));
         semaforosCreacion.signal(1);
         cout<< "Soy "<< getpid() << "y me voy a habilitar el primer turno\n";
-        semaforosListeners.wait(0,nroJugadores);
+        semaforosCreacion.wait(0,nroJugadores);
         semaforosJugadores.signal(0);
         cout << "Soy "<< getpid() << "y ya me habilite el turno\n";
     } else{
@@ -64,11 +58,11 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                              "Se creo correctamente el proceso para el jugador " + to_string(i + 1) +
                                              " con pid " + to_string(getpid())
                                              + " (padre: " + to_string(getppid()) + ")");
-                jugador = new Jugador(i + 1, nroJugadores, &semaforosJugadores, &semaforosEscuchadores);
+                jugador = new Jugador(i + 1, nroJugadores, &semaforosJugadores);
                 jugador->obtenerPilon(pilones->at(i));
 
                 semaforosCreacion.signal(i+1);
-                semaforosListeners.signal(0);
+                semaforosCreacion.signal(0);
 
                 break;
             }

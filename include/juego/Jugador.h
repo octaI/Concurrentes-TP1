@@ -21,7 +21,6 @@ private:
     int nro;
     int cantJugadores;
     Semaforo* semaforosJugadores;
-    Semaforo *semaforosEscuchadores;
 
     stack<Carta*>* cartasEnPilon;
     void pasarTurno();
@@ -29,7 +28,7 @@ private:
 
     void analizarCarta();
 public:
-    Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforosEscuchadores);
+    Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores);
     ~Jugador();
 
     Jugador& operator= (const Jugador& origen);

@@ -69,7 +69,7 @@ void Jugador::analizarCarta(){
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
     }
-    semaforosJugadores->signal(nro-1);
+    //semaforosJugadores->signal(nro-1);
 }
 
 Jugador &Jugador::operator=(const Jugador &origen) {
@@ -96,6 +96,7 @@ void Jugador::jugar() {
         } else {
             analizarCarta();
             semaforosJugadores->signal(nro - 1);
+            sleep(1);
         }
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );

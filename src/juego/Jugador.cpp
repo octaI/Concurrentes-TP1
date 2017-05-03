@@ -153,40 +153,30 @@ void Jugador::asignarTurno(int nroJugador) {
 void Jugador::notificarJugada() {
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar a todos los jugadores que ya realice mi jugada y pueden analizar la carta" );
     unsigned short nsem [cantJugadores - 1];
+    short count [cantJugadores - 1];
     int k = 0;
     for (unsigned short i = 0; i < cantJugadores; i++) {
-        if ( i != (nro - 1) )
-            nsem [i - k] = i;
-        else
+        if ( i != (nro - 1) ) {
+            nsem[i - k] = i;
+            count[i - k] = 1;
+        } else {
             k++;
-    }
-    short count [cantJugadores - 1];
-    int h = 0;
-    for (short j = 0; j < cantJugadores; j++) {
-        if ( j != (nro - 1) )
-            count [j - h] = 1;
-        else
-            h++;
+        }
     }
     semaforosJugadores->multiple_signal(nsem, count, cantJugadores - 1);
 }
 
 void Jugador::esperarAnalisisDeTodosLosJugadores() {
     unsigned short nsem [cantJugadores - 1];
+    short count [cantJugadores - 1];
     int k = 0;
     for (unsigned short i = 0; i < cantJugadores; i++) {
-        if ( i != (nro - 1) )
-            nsem [i - k] = i;
-        else
+        if ( i != (nro - 1) ) {
+            nsem[i - k] = i;
+            count[i - k] = 1;
+        } else {
             k++;
-    }
-    short count [cantJugadores - 1];
-    int h = 0;
-    for (short j = 0; j < cantJugadores; j++) {
-        if ( j != (nro - 1) )
-            count [j - h] = 1;
-        else
-            h++;
+        }
     }
     semaforosJugadores->multiple_wait(nsem, count, cantJugadores - 1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Todos los jugadores analizaron mi carta jugada" );

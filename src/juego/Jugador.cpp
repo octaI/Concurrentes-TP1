@@ -96,7 +96,7 @@ void Jugador::jugar() {
         } else {
             analizarCarta();
             semaforosAnalisis->signal(nro - 1);
-            sleep(1);
+            sleep(1);   // TODO: Ver como arreglar esto!
         }
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
@@ -117,7 +117,7 @@ void Jugador::pasarTurno() {
 
 void Jugador::esperarTurno() {
     this->semaforosJugadores->wait(nro - 1);
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya es mi turno" );
+    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya puedo realizar alguna accion" );
 }
 
 bool Jugador::tieneCartas() {

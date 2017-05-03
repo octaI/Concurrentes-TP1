@@ -68,6 +68,7 @@ void Jugador::analizarCarta(){
     } else {
         cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
     }
+    semaforosJugadores->signal(nro-1);
 }
 
 Jugador &Jugador::operator=(const Jugador &origen) {
@@ -172,7 +173,6 @@ void Jugador::notificarJugada() {
         if ( j != (nro - 1) )
             count [j] = 1;
     }
-    cout << "nsem: " << nsem << " y count: " << count << endl ;
     semaforosJugadores->multiple_signal(nsem, count, cantJugadores - 1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise a los jugadores que revisen la carta que jugue" );
 }

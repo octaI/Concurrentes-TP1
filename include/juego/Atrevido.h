@@ -29,6 +29,7 @@ private:
     void iniciarJugadores(const int nroJugadores);
     void repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores);
     void generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*>*>* pilones);
+    void asignarTurnoInicial();
 
 public:
     Atrevido(int nroJugadores);

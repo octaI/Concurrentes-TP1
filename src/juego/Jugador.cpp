@@ -56,6 +56,7 @@ Carta* Jugador::jugarCarta() {
 }
 
 void Jugador::analizarCarta(){
+    Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "Voy a analizar la carta" );
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> memoria;
     int estadoMemoria = memoria.crear(archivo, 'J');
@@ -88,10 +89,20 @@ void Jugador::jugar() {
             notificarJugada();
 
             analizarCarta();
+            unsigned short nsem [cantJugadores];
+            for (unsigned short i = 0; i < cantJugadores; i++) {
+                nsem [i] = i;
+            }
+            short count [cantJugadores];
+            for (short j = 0; j < cantJugadores; j++) {
+                nsem [j] = 1;
+            }
+            semaforosJugadores->multiple_wait(nsem, count, cantJugadores);
 
             pasarTurno();
         } else {
             analizarCarta();
+            semaforosJugadores->signal(nro - 1);
         }
     }
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
@@ -151,17 +162,17 @@ void Jugador::asignarTurno(int nroJugador) {
 
 void Jugador::notificarJugada() {
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Le voy a avisar a todos los jugadores que ya realice mi jugada y pueden analizar la carta" );
-    unsigned short nsem [cantJugadores];
+    unsigned short nsem [cantJugadores - 1];
     for (unsigned short i = 0; i < cantJugadores; i++) {
-        nsem [i] = i;
+        if ( i != (nro - 1) )
+            nsem [i] = i;
     }
-    short count [cantJugadores];
+    short count [cantJugadores - 1];
     for (short j = 0; j < cantJugadores; j++) {
-        if ( j == (nro - 1) )
-            count [j] = 0;
-        else
+        if ( j != (nro - 1) )
             count [j] = 1;
     }
-    semaforosJugadores->multiple_signal(nsem, count, cantJugadores);
+    cout << "nsem: " << nsem << " y count: " << count << endl ;
+    semaforosJugadores->multiple_signal(nsem, count, cantJugadores - 1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Ya le avise a los jugadores que revisen la carta que jugue" );
 }

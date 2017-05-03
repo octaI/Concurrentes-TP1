@@ -24,6 +24,8 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     Semaforo semaforosCreacion("Atrevido.cpp",'c',valoresInicialesCreacion,nroJugadores);
     Semaforo semaforosListeners("Atrevido.cpp",'l',valoresListeners,nroJugadores);
 
+    asignarTurnoInicial();
+
     unsigned short  i;
     pid_t pid;
     pid_t pidListener;
@@ -96,6 +98,18 @@ void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*
             pilones->at(j)->push(mazo->tomarCarta());
             cout << " - Cartas en el mazo: " << mazo->cantidadDeCartas() << endl;
         }
+    }
+}
+
+void Atrevido::asignarTurnoInicial() {
+    string archivo("../src/juego/Jugador.cpp");
+    MemoriaComp<int> memoria;
+    int estadoMemoria = memoria.crear(archivo, 'T');
+    if ( estadoMemoria == SHM_OK ) {
+        memoria.escribir(1) ;
+        cout << "Atrevido.cpp: Escribo en MEM COMP que es el turno inicial (jugador 1)" << endl;
+    } else {
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
     }
 }
 

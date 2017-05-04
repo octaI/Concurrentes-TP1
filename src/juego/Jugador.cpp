@@ -73,12 +73,11 @@ void Jugador::analizarCarta(){
         int vueltaAnterior = nroVuelta.leer();
         nroVuelta.escribir(vueltaAnterior+1);
         //this->semaforosJugadores->signal(cantJugadores); //sumo uno para llegar a la barrera//                                                                                                             "numero " + to_string(turnoActual.leer()) );
-        cout << "analicé, le mandé la signal al semaforoJugadores" << endl;
         // TODO: Falta liberar memoria
         //memoria . liberar () ;
     } else {
-        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaNro << endl;
-        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaPalo << endl;
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el palo de la carta. Nro error: " + to_string(estadoMemoriaPalo) );
     }
 }
 
@@ -115,9 +114,9 @@ void Jugador::jugar() {
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
             analizarCarta();
             while (nroVuelta.leer() < cantJugadores){
-                cout << "Estoy esperando a que lean las cartas y soy el jugador" << nro << endl; //espera hasta que lean todos los jugadores
+                //cout << "Estoy esperando a que lean las cartas y soy el jugador" << nro << endl; //espera hasta que lean todos los jugadores
             }
-            cout << "Voy a liberar " << endl;
+
             if (!tieneCartas()){
                 finJuego.escribir(1);
             } else{
@@ -148,19 +147,18 @@ Carta* Jugador::jugarCarta() {
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
+    cartaAJugar->accion(nro);
 
     //Memoria compartida:
     if (estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK ) {
-        cout << "Jugador " << nro << ": Escribo la carta en MEM COMP con Nro: " << cartaAJugar->getNumero()
-             << " y Palo: " << cartaAJugar->getPalo() << endl;
         memoriaNro.escribir(cartaAJugar->getNumero());
         memoriaPalo.escribir(cartaAJugar->getPalo());
         Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la carta a MEM COMP con Nro: " + to_string(cartaAJugar->getNumero()) + " del Palo " + to_string(cartaAJugar->getPalo()) + " del JUGADOR " + to_string(turnoActual.leer()));
         // TODO: Falta liberar memoria.
         //memoria.liberar ();
     } else {
-        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaNro << endl;
-        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaPalo << endl;
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el palo de la carta. Nro error: " + to_string(estadoMemoriaPalo) );
     }
     return cartaAJugar;
 
@@ -191,7 +189,6 @@ void Jugador::pasarTurno() {
 
 void Jugador::esperarTurno() {
     int resTurno = turnoActual.crear(archivo,'T');
-    cout << "Estoy en el wait de esperar turno y soy el jugador " << nro << endl;
     this->semaforosJugadores->wait(nro - 1); // si es el jugador 1, pasa de largo y tiene semaforo 0
     //el resto queda varado aca
     //una vez que pasa el jugarCarta salen de aca

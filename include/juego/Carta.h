@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include "Palo.h"
+#include "../../include/logger/Logger.h"
+
 
 using namespace std;
 
@@ -25,7 +27,7 @@ public:
     int getNumero();
     Palo getPalo();
 
-    virtual string accion (int nroJugador);
+    void accion (int nroJugador);
 
 };
 

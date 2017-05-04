@@ -8,10 +8,6 @@
 #include <vector>
 #include <algorithm>
 #include "Carta.h"
-#include "Siete.h"
-#include "Sota.h"
-#include "Caballo.h"
-#include "Rey.h"
 #include "Palo.h"
 #include "Jugador.h"
 

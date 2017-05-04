@@ -75,7 +75,18 @@ void Jugador::analizarCarta(){
         //this->semaforosJugadores->wait(this->nro-1); //lo preparo para dormir
 
         int vueltaAnterior = nroVuelta.leer();
-        nroVuelta.escribir(vueltaAnterior+1);
+        nroVuelta.escribir(vueltaAnterior + 1);
+        
+        // Analizo si soy el ultimo:
+        if (vueltaAnterior == cantJugadores - 1 && esRondaEspecial(resultado)){
+            while (!pilonAuxiliar->empty()) {
+                Carta *carta = pilonAuxiliar->top();
+                cartasEnPilon->push(carta);
+                pilonAuxiliar->pop();
+            }
+        }else{
+
+        }
         //this->semaforosJugadores->signal(cantJugadores); //sumo uno para llegar a la barrera//                                                                                                             "numero " + to_string(turnoActual.leer()) );
         cout << "analicé, le mandé la signal al semaforoJugadores" << endl;
         // TODO: Falta liberar memoria
@@ -160,6 +171,7 @@ Carta* Jugador::jugarCarta() {
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
+    //TODO: delete carta deberia ir aca o no. Sino perdes la referencia.
 
     //Memoria compartida:
     if (estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK ) {

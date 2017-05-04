@@ -6,13 +6,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include "Jugador.h"
-#include "RegistroDeAcciones.h"
 #include "../../include/ipc/Semaforo.h"
 #include "../../include/logger/Logger.h"
 #include "../../include/ipc/Pipe.h"
-#include "../../include/juego/RegistroJugadores.h"
 #include "../../include/ipc/MemoriaComp.h"
-#include "EscuchadorJugador.h"
 
 
 
@@ -23,7 +20,6 @@ class Atrevido {
 private:
     Carta* ultimaCartaJugada = NULL;
     pid_t pidPadre;
-    RegistroDeAcciones* acciones = new RegistroDeAcciones ();
     int cant_acciones = 0;
 
     void eliminarSemaforos();

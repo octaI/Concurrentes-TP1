@@ -49,10 +49,8 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         jugador = new Jugador( 1, nroJugadores, &semaforosJugadores);
         jugador->obtenerPilon(pilones->at(0));
         semaforosCreacion.signal(1);
-        cout<< "Soy "<< getpid() << "y me voy a habilitar el primer turno\n";
         semaforosCreacion.wait(0,nroJugadores);
         semaforosJugadores.signal(0);
-        cout << "Soy "<< getpid() << "y ya me habilite el turno\n" <<endl;
     } else{
 
         for (i = 1; i < nroJugadores; i++) {
@@ -95,7 +93,6 @@ void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*
         pilones->at(j) = new stack<Carta*>();
         for (int i = 0; i < cartasPorJugador; i++) {
             pilones->at(j)->push(mazo->tomarCarta());
-            cout << " - Cartas en el mazo: " << mazo->cantidadDeCartas() << endl;
         }
     }
 }

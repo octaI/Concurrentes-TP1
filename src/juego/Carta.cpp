@@ -21,8 +21,24 @@ Palo Carta::getPalo(){
     return palo;
 }
 
-string Carta::jugar() {
-    return "Carta jugada!";
+void Carta::accion(int nroJugador) {
+    string jugadorMsg = "Jugador " + to_string(nroJugador) + ": ";
+    switch ( this->numero ) {
+        case 7:
+            cout << jugadorMsg << "'¡Atrevido!' / Coloco la mano en el centro de la mesa" << endl;
+            break;
+        case 10:
+            cout << jugadorMsg << "'Buenos días, señorita'" << endl;
+            break;
+        case 11:
+            cout << jugadorMsg << "'Buenas noches, caballero'" << endl;
+            break;
+        case 12:
+            cout << jugadorMsg << "Hago la venia" << endl;
+            break;
+        default:
+            break;
+    }
 }
 
 string Carta::serializar(Carta carta) {

@@ -69,7 +69,7 @@ void Jugador::analizarCarta(){
         int resultado = memoriaNro.leer();
         int palo = memoriaPalo.leer();
 
-        //Obtengo la anteultima carta del pilon auxiliar:
+        //Obtengo el numero de la anteultima carta del pilon auxiliar:
         int nroAnteultimaCarta;
         Carta* anteultimaCarta;
         if (!pilonAuxiliar->empty()){
@@ -77,7 +77,6 @@ void Jugador::analizarCarta(){
             nroAnteultimaCarta = anteultimaCarta->getNumero();
         }
         else {
-            anteultimaCarta = NULL;
             nroAnteultimaCarta = 0;
         }
 
@@ -92,16 +91,15 @@ void Jugador::analizarCarta(){
                 to_string(turnoActual.leer()));
 
         ultimaCartaJugada->accion(nro, nroAnteultimaCarta);
-
-        //this->semaforosJugadores->wait(this->nro-1); //lo preparo para dormir
+        //TODO: delete ultimaCartaJugada . descomentarlo, lo dejo asi por las dudas
 
         int vueltaAnterior = nroVuelta.leer();
         nroVuelta.escribir(vueltaAnterior + 1);
-        //cout << "Jugador NRO: " << nro << " con VUELTA ANTERIOR = " << vueltaAnterior << endl;
 
+        //Analizo si fui el ultimo y me llevo el pilon:
         bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
         if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
-            cout << "Estoy ACA FUE RONDA ESPECIAL" << endl;
+            cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
             cout << endl;
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
@@ -116,7 +114,6 @@ void Jugador::analizarCarta(){
             }
         }
 
-        //this->semaforosJugadores->signal(cantJugadores); //sumo uno para llegar a la barrera//                                                                                                             "numero " + to_string(turnoActual.leer()) );
         // TODO: Falta liberar memoria
         //memoria . liberar () ;
     } else {

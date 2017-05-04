@@ -21,8 +21,13 @@ Palo Carta::getPalo(){
     return palo;
 }
 
-void Carta::accion(int nroJugador) {
+void Carta::accion(int nroJugador, int nroAnteultimaCarta) {
     string jugadorMsg = "Jugador " + to_string(nroJugador) + ": ";
+
+    if (nroAnteultimaCarta == this->numero) {
+    cout << jugadorMsg << "Coloco la mano en el centro de la mesa" << endl;
+    }
+
     switch ( this->numero ) {
         case 7:
             cout << jugadorMsg << "'¡Atrevido!' / Coloco la mano en el centro de la mesa" << endl;

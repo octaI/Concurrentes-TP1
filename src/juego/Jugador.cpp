@@ -74,7 +74,9 @@ void Jugador::analizarCarta(){
                 to_string(turnoActual.leer()));
 
         Carta ultimaCartaJugada = Carta (resultado, Palo(palo));
-        ultimaCartaJugada.accion(nro);
+        Carta* anteultimaCarta = pilonAuxiliar->top();
+        const int nroAnteultimaCarta = anteultimaCarta->getNumero();
+        ultimaCartaJugada.accion(nro, nroAnteultimaCarta);
 
         //this->semaforosJugadores->wait(this->nro-1); //lo preparo para dormir
 
@@ -82,14 +84,16 @@ void Jugador::analizarCarta(){
         nroVuelta.escribir(vueltaAnterior + 1);
 
         // Analizo si soy el ultimo:
-        if (vueltaAnterior == cantJugadores - 1 && esRondaEspecial(resultado)){
+        if (vueltaAnterior == cantJugadores - 1 && esRondaEspecial(resultado, anteultimaCarta->getNumero())){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
                 cartasEnPilon->push(carta);
                 pilonAuxiliar->pop();
             }
-        }else{
-
+        }else if (esRondaEspecial(resultado, anteultimaCarta->getNumero())){
+            Carta *carta = pilonAuxiliar->top();
+            pilonAuxiliar->pop();
+            delete carta;
         }
         //this->semaforosJugadores->signal(cantJugadores); //sumo uno para llegar a la barrera//                                                                                                             "numero " + to_string(turnoActual.leer()) );
         // TODO: Falta liberar memoria
@@ -100,7 +104,10 @@ void Jugador::analizarCarta(){
     }
 }
 
-bool Jugador::esRondaEspecial(int nroCarta){
+bool Jugador::esRondaEspecial(int nroUltimaCarta, int nroAnteultimaCarta){
+    if (nroUltimaCarta == 7 || nroUltimaCarta == nroAnteultimaCarta){
+        return true;
+    }
     return false;
 }
 

@@ -27,7 +27,7 @@ public:
     int getNumero();
     Palo getPalo();
 
-    void accion (int nroJugador);
+    void accion (int nroJugador, int nroAnteultimaCarta);
 
 };
 

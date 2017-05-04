@@ -26,6 +26,7 @@ private:
     RegistroDeAcciones* acciones = new RegistroDeAcciones ();
     int cant_acciones = 0;
 
+    void eliminarSemaforos();
     void iniciarJugadores(const int nroJugadores);
     void repartirCartas(Mazo* mazo, Jugador* jugador, int cantJugadores);
     void generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*>*>* pilones);

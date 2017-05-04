@@ -59,6 +59,8 @@ void Jugador::analizarCarta(){
     int estadoVuelta = nroVuelta.crear(archivo,'V');
     int estadoTurno = turnoActual.crear(archivo,'T');
 
+
+
     MemoriaComp<int> memoriaNro;
     int estadoMemoriaNro = memoriaNro.crear(archivo, 'J');
     MemoriaComp<int> memoriaPalo;
@@ -85,7 +87,6 @@ void Jugador::analizarCarta(){
         pilonAuxiliar->push(ultimaCartaJugada);
         cout << "Jugador NRO: " << nro << " con PILON AUX tamanio = " << pilonAuxiliar->size() << endl;
         cout << "Jugador NRO: " << nro << " con PILON PRINCIPAL tamanio = " << cartasEnPilon->size() << endl;
-
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));
@@ -93,19 +94,24 @@ void Jugador::analizarCarta(){
         ultimaCartaJugada->accion(nro, nroAnteultimaCarta);
         //TODO: delete ultimaCartaJugada . descomentarlo, lo dejo asi por las dudas
 
-        int vueltaAnterior = nroVuelta.leer();
-        nroVuelta.escribir(vueltaAnterior + 1);
 
         //Analizo si fui el ultimo y me llevo el pilon:
+        semaforosJugadores->wait(cantJugadores);
+        int vueltaAnterior = nroVuelta.leer();
+        nroVuelta.escribir(nroVuelta.leer() + 1);
+        semaforosJugadores->signal(cantJugadores);
         bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
         if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
+            Logger::getInstance()->debug("JUEGO", "ACABA DE TERMINAR UNA RONDA ESPECIAL");
             cout << endl;
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
                 pilonAuxiliar->pop();
                 cartasEnPilon->push(carta);
             }
+            cout << "El JUGADOR " << nro << " se lleva las cartas de esta ronda especial" << endl;
+            Logger::getInstance()->debug("Jugador :"+to_string(nro), "Se llevo las cartas de la ronda especial");
         } else if (rondaEspecial){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
@@ -115,6 +121,9 @@ void Jugador::analizarCarta(){
         }
 
         // TODO: Falta liberar memoria
+        if (cartasEnPilon->size() == 0){
+            //finJuego.escribir(nro);
+        }
         //memoria . liberar () ;
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
@@ -151,7 +160,7 @@ void Jugador::jugar() {
         if (this->nro != turnoActual.leer() && (finJuego.leer() == 0)){ //viene con el numero 1, no frena aca
             analizarCarta();
             continue; // ya analizo, arranco el ciclo y que vaya a esperar
-        }else if (finJuego.leer() != 1) {
+        }else if (finJuego.leer() == 0) {
 
             // Jugar
 
@@ -159,9 +168,10 @@ void Jugador::jugar() {
 
             elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
+            semaforosJugadores->signal(cantJugadores);//habilito a que alguien pueda escribir la cant de vueltas
             analizarCarta();
             while (nroVuelta.leer() < cantJugadores){
-                //cout << "Estoy esperando a que lean las cartas y soy el jugador" << nro << endl; //espera hasta que lean todos los jugadores
+                //cout << "Estoy esperando a que lean las cartas y soy el jugador " << nro << " y estamos en la vuelta" << nroVuelta.leer() << endl; //espera hasta que lean todos los jugadores
             }
 
             if (!tieneCartas()){
@@ -177,14 +187,13 @@ void Jugador::jugar() {
 
 
     }
-    //elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
     semaforosJugadores->signal(finJuego.leer(),cantJugadores-1);
     if (nro != finJuego.leer()){
+        cout << "Jugador " << nro << " perdio el juego" << endl;
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Perdi el juego" );
         semaforosJugadores->wait(finJuego.leer(),1);
     } else {
         semaforosJugadores->barrier(finJuego.leer());
-        semaforosJugadores->eliminar(this->nro -1);
         exit(0);
     }
 }

@@ -82,10 +82,22 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         delete jugador;
     } else {
         wait(NULL);
+        semaforosCreacion.eliminar(0);
+        semaforosJugadores.eliminar(0);
+        MemoriaComp<int> memoriaNro;
+        MemoriaComp<int> memoriaPalo;
+        memoriaNro.crear(archivo,'J');
+        memoriaPalo.crear(archivo,'P');
+        memoriaNro.liberar();
+        memoriaPalo.liberar();
+        ciclo.liberar();
+        finJuego.liberar();
+        turnoJugador.liberar();
         delete mazo;
         exit(0);
     }
 }
+
 
 void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*>*>* pilones) {
     int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;

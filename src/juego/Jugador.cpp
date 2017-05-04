@@ -202,7 +202,7 @@ Carta* Jugador::jugarCarta() {
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
-    //TODO: delete carta deberia ir aca o no. Sino perdes la referencia.
+    //TODO: delete cartaAJugar deberia ir aca o no. Sino perdes la referencia.
     cout << "Jugador " << nro << ": Tiro la carta de número " << cartaAJugar->getNumero() << " y palo " << cartaAJugar->getPalo() << " ---------------------------- "<< endl ;
 
     //Memoria compartida:

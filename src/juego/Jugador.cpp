@@ -71,23 +71,25 @@ void Jugador::analizarCarta(){
 
         //Obtengo la anteultima carta del pilon auxiliar:
         int nroAnteultimaCarta;
+        Carta* anteultimaCarta;
         if (!pilonAuxiliar->empty()){
-            Carta* anteultimaCarta = pilonAuxiliar->top();
+            anteultimaCarta = pilonAuxiliar->top();
             nroAnteultimaCarta = anteultimaCarta->getNumero();
         }
         else {
+            anteultimaCarta = NULL;
             nroAnteultimaCarta = 0;
         }
 
         // Creo la ultima carta jugada, que lei de memoria compartida:
         Carta* ultimaCartaJugada = new Carta(resultado, Palo(palo));
         pilonAuxiliar->push(ultimaCartaJugada);
+        cout << "Jugador NRO: " << nro << " con PILON AUX tamanio = " << pilonAuxiliar->size() << endl;
+        cout << "Jugador NRO: " << nro << " con PILON PRINCIPAL tamanio = " << cartasEnPilon->size() << endl;
 
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));
-
-        //Carta ultimaCartaJugada = Carta (resultado, Palo(palo));
 
         ultimaCartaJugada->accion(nro, nroAnteultimaCarta);
 
@@ -95,19 +97,25 @@ void Jugador::analizarCarta(){
 
         int vueltaAnterior = nroVuelta.leer();
         nroVuelta.escribir(vueltaAnterior + 1);
+        //cout << "Jugador NRO: " << nro << " con VUELTA ANTERIOR = " << vueltaAnterior << endl;
 
-        // Analizo si soy el ultimo:
-        /*if (vueltaAnterior == cantJugadores - 1 && esRondaEspecial(resultado, anteultimaCarta->getNumero())){
+        bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
+        if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
+            cout << "Estoy ACA FUE RONDA ESPECIAL" << endl;
+            cout << endl;
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
-                cartasEnPilon->push(carta);
                 pilonAuxiliar->pop();
+                cartasEnPilon->push(carta);
             }
-        }else if (esRondaEspecial(resultado, anteultimaCarta->getNumero())){
-            Carta *carta = pilonAuxiliar->top();
-            pilonAuxiliar->pop();
-            delete carta;
-        }*/
+        } else if (rondaEspecial){
+            while (!pilonAuxiliar->empty()) {
+                Carta *carta = pilonAuxiliar->top();
+                pilonAuxiliar->pop();
+                delete carta;
+            }
+        }
+
         //this->semaforosJugadores->signal(cantJugadores); //sumo uno para llegar a la barrera//                                                                                                             "numero " + to_string(turnoActual.leer()) );
         // TODO: Falta liberar memoria
         //memoria . liberar () ;
@@ -198,7 +206,7 @@ Carta* Jugador::jugarCarta() {
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
     //TODO: delete carta deberia ir aca o no. Sino perdes la referencia.
-    cout << "Jugador " << nro << ": Tiro la carta de número " << cartaAJugar->getNumero() << " y palo " << cartaAJugar->getPalo() << endl ;
+    cout << "Jugador " << nro << ": Tiro la carta de número " << cartaAJugar->getNumero() << " y palo " << cartaAJugar->getPalo() << " ---------------------------- "<< endl ;
 
     //Memoria compartida:
     if (estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK ) {

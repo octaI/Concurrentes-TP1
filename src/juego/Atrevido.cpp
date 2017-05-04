@@ -11,12 +11,9 @@ Atrevido::Atrevido(int nroJugadores) {
 void Atrevido::iniciarJugadores(const int nroJugadores) {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoJugador;
-    MemoriaComp<int> ciclo;
     MemoriaComp<int> finJuego;
     finJuego.crear(archivo,'E');
     finJuego.escribir(0);
-    int resultado_ciclo  = ciclo.crear(archivo,'C');
-    ciclo.escribir(1);
     int resultado = turnoJugador.crear(archivo,'T');
     turnoJugador.escribir(1); // numero de jugador inicial
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
@@ -100,7 +97,6 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         memoriaPalo.crear(archivo,'P');
         memoriaNro.liberar();
         memoriaPalo.liberar();
-        ciclo.liberar();
         finJuego.liberar();
         turnoJugador.liberar();
         delete mazo;

@@ -100,6 +100,9 @@ void Jugador::analizarCarta(){
     }
 }
 
+bool Jugador::esRondaEspecial(int nroCarta){
+    return false;
+}
 
 Jugador &Jugador::operator=(const Jugador &origen) {
     this->nro = origen.nro;

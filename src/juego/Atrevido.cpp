@@ -11,12 +11,9 @@ Atrevido::Atrevido(int nroJugadores) {
 void Atrevido::iniciarJugadores(const int nroJugadores) {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoJugador;
-    MemoriaComp<int> ciclo;
     MemoriaComp<int> finJuego;
     finJuego.crear(archivo,'E');
     finJuego.escribir(0);
-    int resultado_ciclo  = ciclo.crear(archivo,'C');
-    ciclo.escribir(1);
     int resultado = turnoJugador.crear(archivo,'T');
     turnoJugador.escribir(1); // numero de jugador inicial
     Logger::getInstance() -> info ( "Atrevido.cpp", "Van a jugar " + to_string(nroJugadores) + " jugadores" );
@@ -82,10 +79,31 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         delete jugador;
     } else {
         wait(NULL);
+        int j = 0;
+        while(j < nroJugadores) {
+            if ((j+1) != finJuego.leer()){
+                cout << "Jugador " << j+1 << " perdio el juego" << endl;
+            } else{
+                cout << "Jugador " << j+1 << " gano el juego" << endl;
+
+            }
+            j++;
+        }
+        semaforosCreacion.eliminar(0);
+        semaforosJugadores.eliminar(0);
+        MemoriaComp<int> memoriaNro;
+        MemoriaComp<int> memoriaPalo;
+        memoriaNro.crear(archivo,'J');
+        memoriaPalo.crear(archivo,'P');
+        memoriaNro.liberar();
+        memoriaPalo.liberar();
+        finJuego.liberar();
+        turnoJugador.liberar();
         delete mazo;
         exit(0);
     }
 }
+
 
 void Atrevido::generarPilones(Mazo* mazo, int cantJugadores, vector<stack<Carta*>*>* pilones) {
     int cartasPorJugador = mazo->cantidadDeCartas() / cantJugadores;

@@ -25,6 +25,7 @@ private:
     MemoriaComp<int> turnoActual;
     MemoriaComp<int> nroVuelta;
     MemoriaComp<int> finJuego;
+    unsigned short arregloOtrosJugadores[];
 
     stack<Carta*>* cartasEnPilon;
     stack<Carta*>* pilonAuxiliar;

@@ -38,12 +38,10 @@ int Jugador::mostrarNumero() {
 
 Jugador::~Jugador() {
     //TODO: DELETEAR TODO BIEN aca esta el free con error que tira
-    /*limpiarPilon(cartasEnPilon);
     delete cartasEnPilon;
 
-    limpiarPilon(pilonAuxiliar);
     delete pilonAuxiliar;
-     */
+
 
 }
 
@@ -58,6 +56,8 @@ void Jugador::analizarCarta(){
 
     int estadoVuelta = nroVuelta.crear(archivo,'V');
     int estadoTurno = turnoActual.crear(archivo,'T');
+
+
 
     MemoriaComp<int> memoriaNro;
     int estadoMemoriaNro = memoriaNro.crear(archivo, 'J');
@@ -83,29 +83,31 @@ void Jugador::analizarCarta(){
         // Creo la ultima carta jugada, que lei de memoria compartida:
         Carta* ultimaCartaJugada = new Carta(resultado, Palo(palo));
         pilonAuxiliar->push(ultimaCartaJugada);
-        cout << "Jugador NRO: " << nro << " con PILON AUX tamanio = " << pilonAuxiliar->size() << endl;
         cout << "Jugador NRO: " << nro << " con PILON PRINCIPAL tamanio = " << cartasEnPilon->size() << endl;
-
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));
 
         ultimaCartaJugada->accion(nro, nroAnteultimaCarta);
-        //TODO: delete ultimaCartaJugada . descomentarlo, lo dejo asi por las dudas
 
-        int vueltaAnterior = nroVuelta.leer();
-        nroVuelta.escribir(vueltaAnterior + 1);
 
         //Analizo si fui el ultimo y me llevo el pilon:
+        semaforosJugadores->wait(cantJugadores);
+        int vueltaAnterior = nroVuelta.leer();
+        nroVuelta.escribir(nroVuelta.leer() + 1);
+        semaforosJugadores->signal(cantJugadores);
         bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
         if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
+            Logger::getInstance()->debug("JUEGO", "ACABA DE TERMINAR UNA RONDA ESPECIAL");
             cout << endl;
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
                 pilonAuxiliar->pop();
                 cartasEnPilon->push(carta);
             }
+            cout << "El JUGADOR " << nro << " se lleva las cartas de esta ronda especial" << endl;
+            Logger::getInstance()->debug("Jugador :"+to_string(nro), "Se llevo las cartas de la ronda especial");
         } else if (rondaEspecial){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
@@ -114,8 +116,6 @@ void Jugador::analizarCarta(){
             }
         }
 
-        // TODO: Falta liberar memoria
-        //memoria . liberar () ;
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el palo de la carta. Nro error: " + to_string(estadoMemoriaPalo) );
@@ -145,25 +145,25 @@ void Jugador::jugar() {
     short valores[cantJugadores-1] = {};
     fill_n(valores,cantJugadores-1,1);
     int turno = turnoActual.leer(); // que jugador debe jugar
-    //TODO: Ver donde poner el analizarCarta para que realicen la accion.
     while ( tieneCartas() && (finJuego.leer() == 0) ) {
         esperarTurno(); //aca lo duermo
         if (this->nro != turnoActual.leer() && (finJuego.leer() == 0)){ //viene con el numero 1, no frena aca
             analizarCarta();
             continue; // ya analizo, arranco el ciclo y que vaya a esperar
-        }else if (finJuego.leer() != 1) {
+        }else if (finJuego.leer() == 0) {
 
             // Jugar
 
-            jugarCarta();
+            Carta* jugada = jugarCarta();
 
             elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
+            semaforosJugadores->signal(cantJugadores);//habilito a que alguien pueda escribir la cant de vueltas
             analizarCarta();
             while (nroVuelta.leer() < cantJugadores){
-                //cout << "Estoy esperando a que lean las cartas y soy el jugador" << nro << endl; //espera hasta que lean todos los jugadores
+                continue; //barrera casera para esperar que todos hayan leido
             }
-
+            delete jugada;
             if (!tieneCartas()){
                 finJuego.escribir(nro);
                 Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
@@ -177,14 +177,12 @@ void Jugador::jugar() {
 
 
     }
-    //elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
     semaforosJugadores->signal(finJuego.leer(),cantJugadores-1);
     if (nro != finJuego.leer()){
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Perdi el juego" );
         semaforosJugadores->wait(finJuego.leer(),1);
     } else {
         semaforosJugadores->barrier(finJuego.leer());
-        semaforosJugadores->eliminar(this->nro -1);
         exit(0);
     }
 }
@@ -202,7 +200,6 @@ Carta* Jugador::jugarCarta() {
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
-    //TODO: delete cartaAJugar deberia ir aca o no. Sino perdes la referencia.
     cout << "Jugador " << nro << ": Tiro la carta de número " << cartaAJugar->getNumero() << " y palo " << cartaAJugar->getPalo() << " ---------------------------- "<< endl ;
 
     //Memoria compartida:
@@ -210,8 +207,6 @@ Carta* Jugador::jugarCarta() {
         memoriaNro.escribir(cartaAJugar->getNumero());
         memoriaPalo.escribir(cartaAJugar->getPalo());
         Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la carta a MEM COMP con Nro: " + to_string(cartaAJugar->getNumero()) + " del Palo " + to_string(cartaAJugar->getPalo()) + " del JUGADOR " + to_string(turnoActual.leer()));
-        // TODO: Falta liberar memoria.
-        //memoria.liberar ();
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el palo de la carta. Nro error: " + to_string(estadoMemoriaPalo) );

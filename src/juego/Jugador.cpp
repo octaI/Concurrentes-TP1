@@ -102,7 +102,7 @@ void Jugador::jugar() {
     //TODO: Ver donde poner el analizarCarta para que realicen la accion.
     while ( tieneCartas() && (finJuego.leer() == 0) ) {
         esperarTurno(); //aca lo duermo
-        if (this->nro != turnoActual.leer()){ //viene con el numero 1, no frena aca
+        if (this->nro != turnoActual.leer() && (finJuego.leer() == 0)){ //viene con el numero 1, no frena aca
             analizarCarta();
             continue; // ya analizo, arranco el ciclo y que vaya a esperar
         }else if (finJuego.leer() != 1) {
@@ -119,7 +119,10 @@ void Jugador::jugar() {
             }
             cout << "Voy a liberar " << endl;
             if (!tieneCartas()){
-                finJuego.escribir(1);
+                finJuego.escribir(nro);
+                Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
+                semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1);
+                break;
             } else{
                 pasarTurno(); //despierto al proximo jugador
 
@@ -129,10 +132,15 @@ void Jugador::jugar() {
 
     }
     //elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
-    //semaforosJugadores->multiple_wait(jugadoresQueDebenEsperar,valores,cantJugadores-1);
-    Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
-    semaforosJugadores->eliminar(this->nro -1);
-    exit(0);
+    semaforosJugadores->signal(finJuego.leer(),cantJugadores-1);
+    if (nro != finJuego.leer()){
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Perdi el juego" );
+        semaforosJugadores->wait(finJuego.leer(),1);
+    } else {
+        semaforosJugadores->barrier(finJuego.leer());
+        semaforosJugadores->eliminar(this->nro -1);
+        exit(0);
+    }
 }
 
 Carta* Jugador::jugarCarta() {

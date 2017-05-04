@@ -9,6 +9,16 @@ Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
     this->archivo = "../src/juego/Jugador.cpp";
 }
 
+void elegirSemaforosParaModificar(unsigned short arreglo[], int cantJugadores, int nro){
+    int k = 0;
+    for (int j = 0; j < cantJugadores ; j++){
+        if ((j+1) != nro){
+            arreglo[k] = j;
+            k++;
+        }
+    }
+}
+
 stack<Carta*>* Jugador::mostrarPilon() {
     return cartasEnPilon; //doy el puntero del stack
 }
@@ -82,13 +92,7 @@ void Jugador::jugar() {
             // Jugar
 
             jugarCarta();
-            int k = 0;
-            for (int j = 0; j < cantJugadores ; j++){
-                if ((j+1) != nro){
-                    jugadoresQueDebenEsperar[k] = j;
-                    k++;
-                }
-            }
+            elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
             analizarCarta();
             while (nroVuelta.leer() < cantJugadores){
@@ -100,6 +104,8 @@ void Jugador::jugar() {
 
 
     }
+    //elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
+   // semaforosJugadores->multiple_wait(jugadoresQueDebenEsperar,valores,cantJugadores-1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
     semaforosJugadores->eliminar(this->nro -1);
     exit(0);

@@ -72,6 +72,10 @@ void Jugador::analizarCarta(){
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));
+
+        Carta ultimaCartaJugada = Carta (resultado, Palo(palo));
+        ultimaCartaJugada.accion(nro);
+
         //this->semaforosJugadores->wait(this->nro-1); //lo preparo para dormir
 
         int vueltaAnterior = nroVuelta.leer();
@@ -159,7 +163,7 @@ Carta* Jugador::jugarCarta() {
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
-    cartaAJugar->accion(nro);
+    cout << "Jugador " << nro << ": Tiro la carta de número " << cartaAJugar->getNumero() << " y palo " << cartaAJugar->getPalo() << endl ;
 
     //Memoria compartida:
     if (estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK ) {

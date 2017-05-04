@@ -25,7 +25,7 @@ void Carta::accion(int nroJugador) {
     string jugadorMsg = "Jugador " + to_string(nroJugador) + ": ";
     switch ( this->numero ) {
         case 7:
-            cout << jugadorMsg << "'¡Atrevido!' / Coloca la mano en el centro de la mesa" << endl;
+            cout << jugadorMsg << "'¡Atrevido!' / Coloco la mano en el centro de la mesa" << endl;
             break;
         case 10:
             cout << jugadorMsg << "'Buenos días, señorita'" << endl;
@@ -34,7 +34,7 @@ void Carta::accion(int nroJugador) {
             cout << jugadorMsg << "'Buenas noches, caballero'" << endl;
             break;
         case 12:
-            cout << jugadorMsg << "Hace la venia" << endl;
+            cout << jugadorMsg << "Hago la venia" << endl;
             break;
         default:
             break;

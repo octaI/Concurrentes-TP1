@@ -31,6 +31,8 @@ private:
     void pasarTurno();
     void esperarTurno();
     void analizarCarta();
+
+    void limpiarPilon(stack<Carta*>* pilon);
 public:
     Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores);
     ~Jugador();

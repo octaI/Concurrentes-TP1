@@ -27,6 +27,7 @@ private:
     MemoriaComp<int> finJuego;
 
     stack<Carta*>* cartasEnPilon;
+    stack<Carta*>* pilonAuxiliar;
     void pasarTurno();
     void esperarTurno();
     void analizarCarta();

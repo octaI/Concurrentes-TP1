@@ -7,6 +7,7 @@ Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
     this->cantJugadores = cantJugadores;
     this->semaforosJugadores = semaforosJugadores;
     this->archivo = "../src/juego/Jugador.cpp";
+    this->pilonAuxiliar = new stack<Carta*>();
 }
 
 void elegirSemaforosParaModificar(unsigned short arreglo[], int cantJugadores, int nro){
@@ -40,18 +41,33 @@ Jugador::~Jugador() {
         Carta* cartaTemp = cartasEnPilon->top();
         delete cartaTemp;
     }
+    delete cartasEnPilon;
+
+    while (!pilonAuxiliar->empty()){
+        Carta* cartaTemp = pilonAuxiliar->top();
+        delete cartaTemp;
+    }
+    delete pilonAuxiliar;
 
 }
 
 void Jugador::analizarCarta(){
-    MemoriaComp<int> memoria;
 
     int estadoVuelta = nroVuelta.crear(archivo,'V');
     int estadoTurno = turnoActual.crear(archivo,'T');
-    int estadoMemoria = memoria.crear(archivo, 'J');
-    if ( estadoMemoria == SHM_OK ) {
-        int resultado = memoria.leer();
-        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta" + to_string(resultado) + " proveniente del jugador " + to_string(turnoActual.leer()));
+
+    MemoriaComp<int> memoriaNro;
+    int estadoMemoriaNro = memoriaNro.crear(archivo, 'J');
+    MemoriaComp<int> memoriaPalo;
+    int estadoMemoriaPalo = memoriaPalo.crear(archivo, 'P');
+
+
+    if ( estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK) {
+        int resultado = memoriaNro.leer();
+        int palo = memoriaPalo.leer();
+        Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
+                to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
+                to_string(turnoActual.leer()));
         //this->semaforosJugadores->wait(this->nro-1); //lo preparo para dormir
 
         int vueltaAnterior = nroVuelta.leer();
@@ -61,7 +77,8 @@ void Jugador::analizarCarta(){
         // TODO: Falta liberar memoria
         //memoria . liberar () ;
     } else {
-        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaNro << endl;
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaPalo << endl;
     }
 }
 
@@ -122,22 +139,28 @@ Carta* Jugador::jugarCarta() {
     int estadoVuelta = nroVuelta.crear(archivo,'V');
     nroVuelta.escribir(0); //aca arrancaría el turno
     int estadoTurno = turnoActual.crear(archivo,'T');
-    MemoriaComp<int> memoria;
-    int estadoMemoria = memoria.crear(archivo, 'J');
+
+    //Memorias para las cartas:
+    MemoriaComp<int> memoriaNro;
+    int estadoMemoriaNro = memoriaNro.crear(archivo, 'J');
+    MemoriaComp<int> memoriaPalo;
+    int estadoMemoriaPalo = memoriaPalo.crear(archivo, 'P');
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
 
     //Memoria compartida:
-    if (estadoMemoria == SHM_OK) {
+    if (estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK ) {
         cout << "Jugador " << nro << ": Escribo la carta en MEM COMP con Nro: " << cartaAJugar->getNumero()
              << " y Palo: " << cartaAJugar->getPalo() << endl;
-        memoria.escribir(cartaAJugar->getNumero());
+        memoriaNro.escribir(cartaAJugar->getNumero());
+        memoriaPalo.escribir(cartaAJugar->getPalo());
         Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la carta a MEM COMP con Nro: " + to_string(cartaAJugar->getNumero()) + " del Palo " + to_string(cartaAJugar->getPalo()) + " del JUGADOR " + to_string(turnoActual.leer()));
         // TODO: Falta liberar memoria.
         //memoria.liberar ();
     } else {
-        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoria << endl;
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaNro << endl;
+        cout << "ERROR en memoria compartida. Error nro: " << estadoMemoriaPalo << endl;
     }
     return cartaAJugar;
 

@@ -3,6 +3,6 @@
 
 Rey::Rey(Palo palo) : Carta(12, palo) {}
 
-string Rey::jugar() {
-    return Carta::jugar();
+string Rey::accion(int nroJugador) {
+    return Carta::accion(nroJugador);
 }

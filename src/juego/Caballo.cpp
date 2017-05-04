@@ -3,6 +3,6 @@
 
 Caballo::Caballo(Palo palo) : Carta(11, palo) {}
 
-string Caballo::jugar() {
-    return Carta::jugar();
+string Caballo::accion(int nroJugador) {
+    return Carta::accion(nroJugador);
 }

@@ -25,7 +25,7 @@ public:
     int getNumero();
     Palo getPalo();
 
-    virtual string jugar ();
+    virtual string accion (int nroJugador);
 
 };
 

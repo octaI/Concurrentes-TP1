@@ -3,6 +3,6 @@
 
 Sota::Sota(Palo palo) : Carta(10, palo) {}
 
-string Sota::jugar() {
-    return Carta::jugar();
+string Sota::accion(int nroJugador) {
+    return Carta::accion(nroJugador);
 }

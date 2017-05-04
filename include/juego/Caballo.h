@@ -10,7 +10,7 @@ class Caballo : public Carta {
 public:
     Caballo(Palo palo);
 
-    string jugar ();
+    string accion (int nroJugador);
 };
 
 

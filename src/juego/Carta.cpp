@@ -21,7 +21,7 @@ Palo Carta::getPalo(){
     return palo;
 }
 
-string Carta::jugar() {
+string Carta::accion(int nroJugador) {
     return "Carta jugada!";
 }
 

@@ -3,6 +3,6 @@
 
 Siete::Siete(Palo palo) : Carta(7, palo) {}
 
-string Siete::jugar() {
-    return Carta::jugar();
+string Siete::accion(int nroJugador) {
+    return Carta::accion(nroJugador);
 }

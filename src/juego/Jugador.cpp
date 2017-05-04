@@ -37,11 +37,13 @@ int Jugador::mostrarNumero() {
 }
 
 Jugador::~Jugador() {
-    limpiarPilon(cartasEnPilon);
+    //TODO: DELETEAR TODO BIEN aca esta el free con error que tira
+    /*limpiarPilon(cartasEnPilon);
     delete cartasEnPilon;
 
     limpiarPilon(pilonAuxiliar);
     delete pilonAuxiliar;
+     */
 
 }
 
@@ -66,17 +68,28 @@ void Jugador::analizarCarta(){
     if ( estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK) {
         int resultado = memoriaNro.leer();
         int palo = memoriaPalo.leer();
-        Carta* carta = new Carta(resultado, Palo(palo));
-        pilonAuxiliar->push(carta);
+
+        //Obtengo la anteultima carta del pilon auxiliar:
+        int nroAnteultimaCarta;
+        if (!pilonAuxiliar->empty()){
+            Carta* anteultimaCarta = pilonAuxiliar->top();
+            nroAnteultimaCarta = anteultimaCarta->getNumero();
+        }
+        else {
+            nroAnteultimaCarta = 0;
+        }
+
+        // Creo la ultima carta jugada, que lei de memoria compartida:
+        Carta* ultimaCartaJugada = new Carta(resultado, Palo(palo));
+        pilonAuxiliar->push(ultimaCartaJugada);
 
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));
 
-        Carta ultimaCartaJugada = Carta (resultado, Palo(palo));
-        Carta* anteultimaCarta = pilonAuxiliar->top();
-        const int nroAnteultimaCarta = anteultimaCarta->getNumero();
-        ultimaCartaJugada.accion(nro, nroAnteultimaCarta);
+        //Carta ultimaCartaJugada = Carta (resultado, Palo(palo));
+
+        ultimaCartaJugada->accion(nro, nroAnteultimaCarta);
 
         //this->semaforosJugadores->wait(this->nro-1); //lo preparo para dormir
 
@@ -84,7 +97,7 @@ void Jugador::analizarCarta(){
         nroVuelta.escribir(vueltaAnterior + 1);
 
         // Analizo si soy el ultimo:
-        if (vueltaAnterior == cantJugadores - 1 && esRondaEspecial(resultado, anteultimaCarta->getNumero())){
+        /*if (vueltaAnterior == cantJugadores - 1 && esRondaEspecial(resultado, anteultimaCarta->getNumero())){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
                 cartasEnPilon->push(carta);
@@ -94,7 +107,7 @@ void Jugador::analizarCarta(){
             Carta *carta = pilonAuxiliar->top();
             pilonAuxiliar->pop();
             delete carta;
-        }
+        }*/
         //this->semaforosJugadores->signal(cantJugadores); //sumo uno para llegar a la barrera//                                                                                                             "numero " + to_string(turnoActual.leer()) );
         // TODO: Falta liberar memoria
         //memoria . liberar () ;

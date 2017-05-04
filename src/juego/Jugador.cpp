@@ -37,18 +37,19 @@ int Jugador::mostrarNumero() {
 }
 
 Jugador::~Jugador() {
-    while (!cartasEnPilon->empty()){
-        Carta* cartaTemp = cartasEnPilon->top();
-        delete cartaTemp;
-    }
+    limpiarPilon(cartasEnPilon);
     delete cartasEnPilon;
 
-    while (!pilonAuxiliar->empty()){
-        Carta* cartaTemp = pilonAuxiliar->top();
-        delete cartaTemp;
-    }
+    limpiarPilon(pilonAuxiliar);
     delete pilonAuxiliar;
 
+}
+
+void Jugador::limpiarPilon(stack<Carta*>* pilon){
+    while (!pilon->empty()){
+        Carta* cartaTemp = pilon->top();
+        delete cartaTemp;
+    }
 }
 
 void Jugador::analizarCarta(){
@@ -65,6 +66,9 @@ void Jugador::analizarCarta(){
     if ( estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK) {
         int resultado = memoriaNro.leer();
         int palo = memoriaPalo.leer();
+        Carta* carta = new Carta(resultado, Palo(palo));
+        pilonAuxiliar->push(carta);
+
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));

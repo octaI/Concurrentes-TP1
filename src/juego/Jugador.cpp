@@ -77,21 +77,23 @@ Jugador &Jugador::operator=(const Jugador &origen) {
 void Jugador::jugar() {
     int estadoTurno = turnoActual.crear(archivo,'T');
     int estadoVuelta = nroVuelta.crear(archivo,'V');
+    finJuego.crear(archivo,'E');
     unsigned short jugadoresQueDebenEsperar[cantJugadores-1] = {};
     short valores[cantJugadores-1] = {};
     fill_n(valores,cantJugadores-1,1);
     int turno = turnoActual.leer(); // que jugador debe jugar
     //TODO: Ver donde poner el analizarCarta para que realicen la accion.
-    while ( tieneCartas() ) {
+    while ( tieneCartas() && (finJuego.leer() == 0) ) {
         esperarTurno(); //aca lo duermo
         if (this->nro != turnoActual.leer()){ //viene con el numero 1, no frena aca
             analizarCarta();
             continue; // ya analizo, arranco el ciclo y que vaya a esperar
-        }else {
+        }else if (finJuego.leer() != 1) {
 
             // Jugar
 
             jugarCarta();
+
             elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
             analizarCarta();
@@ -99,13 +101,18 @@ void Jugador::jugar() {
                 cout << "Estoy esperando a que lean las cartas y soy el jugador" << nro << endl; //espera hasta que lean todos los jugadores
             }
             cout << "Voy a liberar " << endl;
-            pasarTurno(); //despierto al proximo jugador
+            if (!tieneCartas()){
+                finJuego.escribir(1);
+            } else{
+                pasarTurno(); //despierto al proximo jugador
+
+            }
         }
 
 
     }
     //elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
-   // semaforosJugadores->multiple_wait(jugadoresQueDebenEsperar,valores,cantJugadores-1);
+    //semaforosJugadores->multiple_wait(jugadoresQueDebenEsperar,valores,cantJugadores-1);
     Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "No tengo mas cartas para jugar" );
     semaforosJugadores->eliminar(this->nro -1);
     exit(0);

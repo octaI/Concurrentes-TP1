@@ -24,6 +24,7 @@ private:
     string archivo;
     MemoriaComp<int> turnoActual;
     MemoriaComp<int> nroVuelta;
+    MemoriaComp<int> finJuego;
 
     stack<Carta*>* cartasEnPilon;
     void pasarTurno();

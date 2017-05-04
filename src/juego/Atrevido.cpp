@@ -12,6 +12,9 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoJugador;
     MemoriaComp<int> ciclo;
+    MemoriaComp<int> finJuego;
+    finJuego.crear(archivo,'E');
+    finJuego.escribir(0);
     int resultado_ciclo  = ciclo.crear(archivo,'C');
     ciclo.escribir(1);
     int resultado = turnoJugador.crear(archivo,'T');

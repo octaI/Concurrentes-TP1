@@ -87,7 +87,15 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
         Arbitro* arbitro;
         pid_t pid2 = fork ();
-        if ( pid2 == 0 ) {
+        if ( pid2 < 0 ) {
+            Logger::getInstance()->error("Atrevido.cpp",
+                                         "Error al crear proceso hijo para el árbitro");
+            exit(1);
+        } else if ( pid2 == 0 ) {
+            Logger::getInstance()->debug("Atrevido.cpp",
+                                         "Se creo correctamente el proceso para el árbitro "
+                                         " con pid " + to_string(getpid())
+                                         + " (padre: " + to_string(getppid()) + ")");
             arbitro = new Arbitro ( &semaforoArbitro, nroJugadores );
             delete arbitro;
         } else {

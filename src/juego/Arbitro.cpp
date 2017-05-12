@@ -24,17 +24,19 @@ bool Arbitro::terminoPartida() {
 }
 
 void Arbitro::consultarJugadores() {
-    int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear( "../src/juego/Jugador.cpp", 'Z' );
-
-    if ( resultadoShMemCantCartasJugadores == SHM_OK ) {
-        int* cantCartasJugadores = shMemCantCartasJugadores.leer();
-        for (int i = 0; i < cantJugadores; i++) {
-            int cantCartas = cantCartasJugadores [i];
-            Logger :: getInstance() -> info ( "Árbitro", "El jugador " + to_string(i + 1) + " tiene " + to_string(cantCartas) + " cartas en su pilón" );
+    for (int i = 0; i < cantJugadores; i++) {
+        char buffer[1];
+        int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear("../src/juego/Jugador.cpp", (char) sprintf(buffer, "%d", i + 1));
+        if (resultadoShMemCantCartasJugadores == SHM_OK) {
+            int cantCartas = shMemCantCartasJugadores.leer();
+            Logger::getInstance()->info("Árbitro",
+                                        "El jugador " + to_string(i + 1) + " tiene " + to_string(cantCartas) +
+                                        " cartas en su pilón");
             cout << "Árbitro: El jugador " << i + 1 << " tiene " << cantCartas << " cartas en su pilón" << endl;
+        } else {
+            Logger::getInstance()->error("Árbitro",
+                                         "No se pudo crear la memoria compartida para obtener la cantidad de cartas en el pilón de cada jugador. "
+                                                 "Error nro: " + to_string(resultadoShMemCantCartasJugadores));
         }
-    } else {
-        Logger :: getInstance() -> error ("Árbitro", "No se pudo crear la memoria compartida para obtener la cantidad de cartas en el pilón de cada jugador. "
-                                                             "Error nro: " + to_string(resultadoShMemCantCartasJugadores) );
     }
 }

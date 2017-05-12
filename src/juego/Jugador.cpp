@@ -199,8 +199,9 @@ Carta* Jugador::jugarCarta() {
     int estadoMemoriaPalo = memoriaPalo.crear(archivo, 'P');
 
     // Memoria para que el arbitro consulte
-    MemoriaComp<int*> memoriaCantCartas;
-    int estadoMemoriaCantCartas = memoriaCantCartas.crear(archivo, 'Z');
+    MemoriaComp<int> memoriaCantCartas;
+    char buffer [1];
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) sprintf(buffer, "%d", nro) );
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
@@ -217,9 +218,7 @@ Carta* Jugador::jugarCarta() {
     }
 
     if (estadoMemoriaCantCartas == SHM_OK) {
-        int* cantCartasJugadores = memoriaCantCartas.leer();
-        cantCartasJugadores [nro - 1] = (int) cartasEnPilon->size();
-        memoriaCantCartas.escribir (cantCartasJugadores);
+        memoriaCantCartas.escribir ( (int) cartasEnPilon->size() );
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
     }

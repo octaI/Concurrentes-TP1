@@ -14,7 +14,7 @@ private:
     Semaforo* semaforoArbitro;
     int cantJugadores;
 
-    MemoriaComp<int*> shMemCantCartasJugadores;
+    MemoriaComp<int> shMemCantCartasJugadores;
     MemoriaComp<int> shMemFinJuego;
 
     void iniciar();

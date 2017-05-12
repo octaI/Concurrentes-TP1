@@ -2,10 +2,11 @@
 
 
 
-Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores) {
+Jugador::Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforoArbitro) {
     this->nro = nro;
     this->cantJugadores = cantJugadores;
     this->semaforosJugadores = semaforosJugadores;
+    this->semaforoArbitro = semaforoArbitro;
     this->archivo = "../src/juego/Jugador.cpp";
     this->pilonAuxiliar = new stack<Carta*>();
 }
@@ -30,6 +31,17 @@ void Jugador::tomarCarta(Carta* carta) {
 
 void Jugador::obtenerPilon(stack<Carta*>* pilon){
     cartasEnPilon = pilon;
+
+    // Memoria para que el arbitro consulte
+    MemoriaComp<int> memoriaCantCartas;
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) nro );
+    if (estadoMemoriaCantCartas == SHM_OK) {
+        int cantCartas = (int) cartasEnPilon->size();
+        memoriaCantCartas.escribir (cantCartas);
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la cant de cartas del pilon a MEM COMP: " + to_string(cantCartas) );
+    } else {
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
+    }
 }
 
 int Jugador::mostrarNumero() {
@@ -57,8 +69,6 @@ void Jugador::analizarCarta(){
 
     int estadoVuelta = nroVuelta.crear(archivo,'V');
     int estadoTurno = turnoActual.crear(archivo,'T');
-
-
 
     MemoriaComp<int> memoriaNro;
     int estadoMemoriaNro = memoriaNro.crear(archivo, 'J');
@@ -100,13 +110,7 @@ void Jugador::analizarCarta(){
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
             Logger::getInstance()->debug("JUEGO", "ACABA DE TERMINAR UNA RONDA ESPECIAL");
             cout << endl;
-            while (!pilonAuxiliar->empty()) {
-                Carta *carta = pilonAuxiliar->top();
-                pilonAuxiliar->pop();
-                cartasEnPilon->push(carta);
-            }
-            cout << "El JUGADOR " << nro << " se lleva las cartas de esta ronda especial" << endl;
-            Logger::getInstance()->debug("Jugador :"+to_string(nro), "Se llevo las cartas de la ronda especial");
+            levantarPilonCentral();
         } else if (rondaEspecial){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
@@ -133,6 +137,7 @@ Jugador &Jugador::operator=(const Jugador &origen) {
     this->cantJugadores = origen.cantJugadores;
     this->cartasEnPilon = origen.cartasEnPilon;
     this->semaforosJugadores = origen.semaforosJugadores;
+    this->semaforoArbitro = semaforoArbitro;
     return *this;
 }
 
@@ -152,8 +157,10 @@ void Jugador::jugar() {
         }else if (finJuego.leer() == 0) {
 
             // Jugar
-
             Carta* jugada = jugarCarta();
+
+            // Avisar al arbitro que puede consultar cantidad de cartas de los jugadores
+            semaforoArbitro->signal();
 
             elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
@@ -197,6 +204,10 @@ Carta* Jugador::jugarCarta() {
     MemoriaComp<int> memoriaPalo;
     int estadoMemoriaPalo = memoriaPalo.crear(archivo, 'P');
 
+    // Memoria para que el arbitro consulte
+    MemoriaComp<int> memoriaCantCartas;
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) nro );
+
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();
     cout << "Jugador " << nro << ": Tiro la carta de número " << cartaAJugar->getNumero() << " y palo " << cartaAJugar->getPalo() << " ---------------------------- "<< endl ;
@@ -210,6 +221,15 @@ Carta* Jugador::jugarCarta() {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el palo de la carta. Nro error: " + to_string(estadoMemoriaPalo) );
     }
+
+    if (estadoMemoriaCantCartas == SHM_OK) {
+        int cantCartas = (int) cartasEnPilon->size();
+        memoriaCantCartas.escribir (cantCartas);
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la cant de cartas del pilon a MEM COMP: " + to_string(cantCartas) );
+    } else {
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
+    }
+
     return cartaAJugar;
 
 
@@ -247,4 +267,25 @@ void Jugador::esperarTurno() {
 
 bool Jugador::tieneCartas() {
     return !cartasEnPilon->empty();
+}
+
+void Jugador::levantarPilonCentral() {
+    while (!pilonAuxiliar->empty()) {
+        Carta *carta = pilonAuxiliar->top();
+        pilonAuxiliar->pop();
+        cartasEnPilon->push(carta);
+    }
+    cout << "El JUGADOR " << nro << " se lleva las cartas de esta ronda especial" << endl;
+    Logger::getInstance()->debug("Jugador :"+to_string(nro), "Se llevo las cartas de la ronda especial");
+
+    // Memoria para que el arbitro consulte
+    MemoriaComp<int> memoriaCantCartas;
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) nro );
+    if (estadoMemoriaCantCartas == SHM_OK) {
+        int cantCartas = (int) cartasEnPilon->size();
+        memoriaCantCartas.escribir (cantCartas);
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la cant de cartas del pilon a MEM COMP: " + to_string(cantCartas) );
+    } else {
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
+    }
 }

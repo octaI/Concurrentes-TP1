@@ -12,6 +12,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoJugador;
     MemoriaComp<int> finJuego;
+    MemoriaComp<int> cantCartasJugadores;
     finJuego.crear(archivo,'E');
     finJuego.escribir(0);
     int resultado = turnoJugador.crear(archivo,'T');
@@ -26,11 +27,16 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores+1 );
     Semaforo semaforosCreacion("Atrevido.cpp",'c',valoresInicialesCreacion,nroJugadores);
 
+    // Semaforo de arbitro
+    int valorInicialArbitro [1] = {0};
+    Semaforo semaforoArbitro ( "../src/juego/Arbitro.cpp", 'a', valorInicialArbitro );
+
     unsigned short  i;
     pid_t pid;
     Mazo* mazo = new Mazo ();
     vector<stack<Carta*>*>* pilones = new vector<stack<Carta*>*> (nroJugadores);
     generarPilones(mazo, nroJugadores, pilones);
+
     Jugador* jugador;
     semaforosCreacion.signal(0);
     pid_t pid1 = fork();
@@ -43,7 +49,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                      "Se creo correctamente el proceso para el jugador " + to_string(1) +
                                      " con pid " + to_string(getpid())
                                      + " (padre: " + to_string(getppid()) + ")");
-        jugador = new Jugador( 1, nroJugadores, &semaforosJugadores);
+        jugador = new Jugador( 1, nroJugadores, &semaforosJugadores, &semaforoArbitro );
         jugador->obtenerPilon(pilones->at(0));
         semaforosCreacion.signal(1);
         semaforosCreacion.wait(0,nroJugadores);
@@ -62,7 +68,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                              "Se creo correctamente el proceso para el jugador " + to_string(i + 1) +
                                              " con pid " + to_string(getpid())
                                              + " (padre: " + to_string(getppid()) + ")");
-                jugador = new Jugador(i + 1, nroJugadores, &semaforosJugadores);
+                jugador = new Jugador(i + 1, nroJugadores, &semaforosJugadores, &semaforoArbitro );
                 jugador->obtenerPilon(pilones->at(i));
 
                 semaforosCreacion.signal(i+1);
@@ -78,29 +84,52 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         jugador->jugar();
         delete jugador;
     } else {
-        wait(NULL);
-        int j = 0;
-        while(j < nroJugadores) {
-            if ((j+1) != finJuego.leer()){
-                cout << "Jugador " << j+1 << " perdio el juego" << endl;
-            } else{
-                cout << "Jugador " << j+1 << " gano el juego" << endl;
 
+        Arbitro* arbitro;
+        pid_t pid2 = fork ();
+        if ( pid2 < 0 ) {
+            Logger::getInstance()->error("Atrevido.cpp",
+                                         "Error al crear proceso hijo para el árbitro");
+            exit(1);
+        } else if ( pid2 == 0 ) {
+            Logger::getInstance()->debug("Atrevido.cpp",
+                                         "Se creo correctamente el proceso para el árbitro "
+                                         " con pid " + to_string(getpid())
+                                         + " (padre: " + to_string(getppid()) + ")");
+            arbitro = new Arbitro ( &semaforoArbitro, nroJugadores );
+        } else {
+            wait(NULL);
+            int j = 0;
+            while(j < nroJugadores) {
+                if ((j+1) != finJuego.leer()){
+                    cout << "Jugador " << j+1 << " perdio el juego" << endl;
+                } else{
+                    cout << "Jugador " << j+1 << " gano el juego" << endl;
+
+                }
+                j++;
             }
-            j++;
+            semaforosCreacion.eliminar(0);
+            semaforosJugadores.eliminar(0);
+            MemoriaComp<int> memoriaNro;
+            MemoriaComp<int> memoriaPalo;
+            memoriaNro.crear(archivo,'J');
+            memoriaPalo.crear(archivo,'P');
+            memoriaNro.liberar();
+            memoriaPalo.liberar();
+            finJuego.liberar();
+            turnoJugador.liberar();
+
+            MemoriaComp<int> shMemCantCartasJugadores;
+            for (int j = 0; j < nroJugadores; j++) {
+                shMemCantCartasJugadores.crear("../src/juego/Jugador.cpp", (char) i + 1);
+                shMemCantCartasJugadores.liberar();
+            }
+
+            delete mazo;
+            delete arbitro;
+            exit(0);
         }
-        semaforosCreacion.eliminar(0);
-        semaforosJugadores.eliminar(0);
-        MemoriaComp<int> memoriaNro;
-        MemoriaComp<int> memoriaPalo;
-        memoriaNro.crear(archivo,'J');
-        memoriaPalo.crear(archivo,'P');
-        memoriaNro.liberar();
-        memoriaPalo.liberar();
-        finJuego.liberar();
-        turnoJugador.liberar();
-        delete mazo;
-        exit(0);
     }
 }
 

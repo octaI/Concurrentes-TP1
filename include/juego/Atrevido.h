@@ -10,8 +10,7 @@
 #include "../../include/logger/Logger.h"
 #include "../../include/ipc/Pipe.h"
 #include "../../include/ipc/MemoriaComp.h"
-
-
+#include "../../include/juego/Arbitro.h"
 
 using namespace std;
 

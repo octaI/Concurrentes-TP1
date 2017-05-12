@@ -1,30 +1,42 @@
 #include "../../include/juego/Arbitro.h"
 
-int Arbitro::verCantCartasPilonDeJugador(int nroJugador) {
-    char buffer[BUFFSIZE];
-    ssize_t bytesLeidos = canalesConJugadores [nroJugador - 1] -> leer ( static_cast<void*>(buffer), BUFFSIZE );
-    std::string mensaje = buffer;
-    mensaje.resize ( bytesLeidos );
-    return atoi(mensaje.c_str());
+
+Arbitro::Arbitro(Semaforo *semaforoArbitro, int cantJugadores) {
+    this->semaforoArbitro = semaforoArbitro;
+    this->cantJugadores = cantJugadores;
+    iniciar();
+}
+
+void Arbitro::iniciar() {
+    while ( !terminoPartida() ) {
+        semaforoArbitro->wait();
+        consultarJugadores();
+    }
+    Logger :: getInstance() -> debug ( "Árbitro", "Terminó la partida, el árbitro se retira" );
+    exit(0);
+}
+
+bool Arbitro::terminoPartida() {
+    shMemFinJuego.crear( "../src/juego/Jugador.cpp", 'E' );
+    return shMemFinJuego.leer() > 0;
+}
+
+void Arbitro::consultarJugadores() {
+    for (int i = 0; i < cantJugadores; i++) {
+        int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear("../src/juego/Jugador.cpp", (char) i + 1);
+        if (resultadoShMemCantCartasJugadores == SHM_OK) {
+            int cantCartas = shMemCantCartasJugadores.leer();
+            Logger::getInstance()->info("Árbitro",
+                                        "El jugador " + to_string(i + 1) + " tiene " + to_string(cantCartas) +
+                                        " cartas en su pilón");
+            cout << "Árbitro: El jugador " << i + 1 << " tiene " << cantCartas << " cartas en su pilón" << endl;
+        } else {
+            Logger::getInstance()->error("Árbitro",
+                                         "No se pudo crear la memoria compartida para obtener la cantidad de cartas en el pilón de cada jugador. "
+                                                 "Error nro: " + to_string(resultadoShMemCantCartasJugadores));
+        }
+    }
 }
 
 Arbitro::~Arbitro() {
-    for (int i =0; i < cantJugadores; i++) {
-        canalesConJugadores [i] -> cerrar();
-    }
-}
-
-Arbitro::Arbitro(Pipe **canalesConJugadores, Semaforo* semaforoConsulta, int cantJugadores) {
-    this->canalesConJugadores = canalesConJugadores;
-    this->semaforoConsulta = semaforoConsulta;
-    this->cantJugadores = cantJugadores;
-}
-
-void Arbitro::consultar() {
-    semaforoConsulta->wait();
-
-    for (int i = 0; i < cantJugadores; i++) {
-        int cantCartas = verCantCartasPilonDeJugador(i);
-        Logger :: getInstance() -> info ( "Arbitro", "El jugador " + to_string(i + 1) + " tiene " + to_string(cantCartas) + " cartas" );
-    }
 }

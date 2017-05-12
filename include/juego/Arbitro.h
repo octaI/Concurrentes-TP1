@@ -10,19 +10,20 @@ using namespace std;
 class Arbitro {
 
 private:
-    static const int BUFFSIZE = 2;
 
-    Pipe** canalesConJugadores;
-    Semaforo* semaforoConsulta;
+    Semaforo* semaforoArbitro;
     int cantJugadores;
 
-    int verCantCartasPilonDeJugador(int nroJugador);
+    MemoriaComp<int> shMemCantCartasJugadores;
+    MemoriaComp<int> shMemFinJuego;
+
+    void iniciar();
+    void consultarJugadores();
+    bool terminoPartida();
 
 public:
-    Arbitro(Pipe** canalesConJugadores, Semaforo* semaforoConsulta, int cantJugadores);
+    Arbitro( Semaforo* semaforoArbitro, int cantJugadores );
     ~Arbitro();
-
-    void consultar ();
 };
 
 

@@ -23,8 +23,7 @@ bool Arbitro::terminoPartida() {
 
 void Arbitro::consultarJugadores() {
     for (int i = 0; i < cantJugadores; i++) {
-        char buffer[1];
-        int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear("../src/juego/Jugador.cpp", (char) sprintf(buffer, "%d", i + 1));
+        int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear("../src/juego/Jugador.cpp", (char) i + 1);
         if (resultadoShMemCantCartasJugadores == SHM_OK) {
             int cantCartas = shMemCantCartasJugadores.leer();
             Logger::getInstance()->info("Árbitro",

@@ -34,8 +34,7 @@ void Jugador::obtenerPilon(stack<Carta*>* pilon){
 
     // Memoria para que el arbitro consulte
     MemoriaComp<int> memoriaCantCartas;
-    char buffer [1];
-    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) sprintf(buffer, "%d", nro) );
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) nro );
     if (estadoMemoriaCantCartas == SHM_OK) {
         int cantCartas = (int) cartasEnPilon->size();
         memoriaCantCartas.escribir (cantCartas);
@@ -214,8 +213,7 @@ Carta* Jugador::jugarCarta() {
 
     // Memoria para que el arbitro consulte
     MemoriaComp<int> memoriaCantCartas;
-    char buffer [1];
-    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) sprintf(buffer, "%d", nro) );
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) nro );
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();

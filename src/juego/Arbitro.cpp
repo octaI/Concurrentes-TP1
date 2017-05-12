@@ -39,5 +39,4 @@ void Arbitro::consultarJugadores() {
 }
 
 Arbitro::~Arbitro() {
-    shMemCantCartasJugadores.liberar();
 }

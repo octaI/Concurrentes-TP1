@@ -97,7 +97,6 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                          " con pid " + to_string(getpid())
                                          + " (padre: " + to_string(getppid()) + ")");
             arbitro = new Arbitro ( &semaforoArbitro, nroJugadores );
-            delete arbitro;
         } else {
             wait(NULL);
             int j = 0;
@@ -120,7 +119,15 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
             memoriaPalo.liberar();
             finJuego.liberar();
             turnoJugador.liberar();
+
+            MemoriaComp<int> shMemCantCartasJugadores;
+            for (int j = 0; j < nroJugadores; j++) {
+                shMemCantCartasJugadores.crear("../src/juego/Jugador.cpp", (char) i + 1);
+                shMemCantCartasJugadores.liberar();
+            }
+
             delete mazo;
+            delete arbitro;
             exit(0);
         }
     }

@@ -200,7 +200,7 @@ Carta* Jugador::jugarCarta() {
 
     // Memoria para que el arbitro consulte
     MemoriaComp<int*> memoriaCantCartas;
-    int estadoMemoriaCantCartas = memoriaCantCartas.crear(archivo, 'C');
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear(archivo, 'Z');
 
     Carta* cartaAJugar = this->cartasEnPilon->top();
     this->cartasEnPilon->pop();

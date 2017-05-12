@@ -24,7 +24,7 @@ bool Arbitro::terminoPartida() {
 }
 
 void Arbitro::consultarJugadores() {
-    int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear( "../src/juego/Jugador.cpp", 'C' );
+    int resultadoShMemCantCartasJugadores = shMemCantCartasJugadores.crear( "../src/juego/Jugador.cpp", 'Z' );
 
     if ( resultadoShMemCantCartasJugadores == SHM_OK ) {
         int* cantCartasJugadores = shMemCantCartasJugadores.leer();

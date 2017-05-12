@@ -29,7 +29,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
 
     // Semaforo de arbitro
     int valorInicialArbitro [1] = {0};
-    Semaforo semaforoArbitro ( "Arbitro.cpp", 'a', valorInicialArbitro );
+    Semaforo semaforoArbitro ( "../src/juego/Arbitro.cpp", 'a', valorInicialArbitro );
 
     unsigned short  i;
     pid_t pid;

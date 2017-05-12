@@ -36,6 +36,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     Mazo* mazo = new Mazo ();
     vector<stack<Carta*>*>* pilones = new vector<stack<Carta*>*> (nroJugadores);
     generarPilones(mazo, nroJugadores, pilones);
+
     Jugador* jugador;
     semaforosCreacion.signal(0);
     pid_t pid1 = fork();

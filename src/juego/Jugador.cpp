@@ -111,13 +111,7 @@ void Jugador::analizarCarta(){
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
             Logger::getInstance()->debug("JUEGO", "ACABA DE TERMINAR UNA RONDA ESPECIAL");
             cout << endl;
-            while (!pilonAuxiliar->empty()) {
-                Carta *carta = pilonAuxiliar->top();
-                pilonAuxiliar->pop();
-                cartasEnPilon->push(carta);
-            }
-            cout << "El JUGADOR " << nro << " se lleva las cartas de esta ronda especial" << endl;
-            Logger::getInstance()->debug("Jugador :"+to_string(nro), "Se llevo las cartas de la ronda especial");
+            levantarPilonCentral();
         } else if (rondaEspecial){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
@@ -274,4 +268,25 @@ void Jugador::esperarTurno() {
 
 bool Jugador::tieneCartas() {
     return !cartasEnPilon->empty();
+}
+
+void Jugador::levantarPilonCentral() {
+    while (!pilonAuxiliar->empty()) {
+        Carta *carta = pilonAuxiliar->top();
+        pilonAuxiliar->pop();
+        cartasEnPilon->push(carta);
+    }
+    cout << "El JUGADOR " << nro << " se lleva las cartas de esta ronda especial" << endl;
+    Logger::getInstance()->debug("Jugador :"+to_string(nro), "Se llevo las cartas de la ronda especial");
+
+    // Memoria para que el arbitro consulte
+    MemoriaComp<int> memoriaCantCartas;
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) nro );
+    if (estadoMemoriaCantCartas == SHM_OK) {
+        int cantCartas = (int) cartasEnPilon->size();
+        memoriaCantCartas.escribir (cantCartas);
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la cant de cartas del pilon a MEM COMP: " + to_string(cantCartas) );
+    } else {
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
+    }
 }

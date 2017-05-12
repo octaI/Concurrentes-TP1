@@ -34,6 +34,7 @@ private:
     void esperarTurno();
     void analizarCarta();
     bool esRondaEspecial(int nroUltimaCarta, int nroAnteultimaCarta);
+    void levantarPilonCentral();
 
     void limpiarPilon(stack<Carta*>* pilon);
 public:

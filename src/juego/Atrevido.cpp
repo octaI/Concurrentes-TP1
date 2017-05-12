@@ -22,7 +22,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     // Semaforos para administrar turnos
     int valoresInicialesJugadores [nroJugadores+1] = {}; //la ultima pos es un contador para el turno
     int valoresInicialesCreacion [nroJugadores] = {};
-    std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
+    std::fill_n(valoresInicialesJugadores, nroJugadores+1, 0);    // inicializados en 0
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores+1 );
     Semaforo semaforosCreacion("Atrevido.cpp",'c',valoresInicialesCreacion,nroJugadores);
 

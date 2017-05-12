@@ -53,6 +53,7 @@ void Jugador::limpiarPilon(stack<Carta*>* pilon){
 }
 
 void Jugador::analizarCarta(){
+    semaforosJugadores->wait(cantJugadores,1);
 
     int estadoVuelta = nroVuelta.crear(archivo,'V');
     int estadoTurno = turnoActual.crear(archivo,'T');
@@ -92,10 +93,8 @@ void Jugador::analizarCarta(){
 
 
         //Analizo si fui el ultimo y me llevo el pilon:
-        semaforosJugadores->wait(cantJugadores);
         int vueltaAnterior = nroVuelta.leer();
         nroVuelta.escribir(nroVuelta.leer() + 1);
-        semaforosJugadores->signal(cantJugadores);
         bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
         if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
@@ -115,7 +114,7 @@ void Jugador::analizarCarta(){
                 delete carta;
             }
         }
-
+        semaforosJugadores->signal(cantJugadores,1);
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el palo de la carta. Nro error: " + to_string(estadoMemoriaPalo) );
@@ -158,7 +157,7 @@ void Jugador::jugar() {
 
             elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
-            semaforosJugadores->signal(cantJugadores);//habilito a que alguien pueda escribir la cant de vueltas
+            //semaforosJugadores->signal(cantJugadores,1);//habilito a que alguien pueda escribir la cant de vueltas
             analizarCarta();
             while (nroVuelta.leer() < cantJugadores){
                 continue; //barrera casera para esperar que todos hayan leido

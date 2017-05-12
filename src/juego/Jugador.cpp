@@ -31,6 +31,18 @@ void Jugador::tomarCarta(Carta* carta) {
 
 void Jugador::obtenerPilon(stack<Carta*>* pilon){
     cartasEnPilon = pilon;
+
+    // Memoria para que el arbitro consulte
+    MemoriaComp<int> memoriaCantCartas;
+    char buffer [1];
+    int estadoMemoriaCantCartas = memoriaCantCartas.crear( archivo, (char) sprintf(buffer, "%d", nro) );
+    if (estadoMemoriaCantCartas == SHM_OK) {
+        int cantCartas = (int) cartasEnPilon->size();
+        memoriaCantCartas.escribir (cantCartas);
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la cant de cartas del pilon a MEM COMP: " + to_string(cantCartas) );
+    } else {
+        Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
+    }
 }
 
 int Jugador::mostrarNumero() {

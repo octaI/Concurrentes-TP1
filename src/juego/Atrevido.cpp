@@ -84,29 +84,37 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
         jugador->jugar();
         delete jugador;
     } else {
-        wait(NULL);
-        int j = 0;
-        while(j < nroJugadores) {
-            if ((j+1) != finJuego.leer()){
-                cout << "Jugador " << j+1 << " perdio el juego" << endl;
-            } else{
-                cout << "Jugador " << j+1 << " gano el juego" << endl;
 
+        Arbitro* arbitro;
+        pid_t pid2 = fork ();
+        if ( pid2 == 0 ) {
+            arbitro = new Arbitro ( &semaforoArbitro, nroJugadores );
+            delete arbitro;
+        } else {
+            wait(NULL);
+            int j = 0;
+            while(j < nroJugadores) {
+                if ((j+1) != finJuego.leer()){
+                    cout << "Jugador " << j+1 << " perdio el juego" << endl;
+                } else{
+                    cout << "Jugador " << j+1 << " gano el juego" << endl;
+
+                }
+                j++;
             }
-            j++;
+            semaforosCreacion.eliminar(0);
+            semaforosJugadores.eliminar(0);
+            MemoriaComp<int> memoriaNro;
+            MemoriaComp<int> memoriaPalo;
+            memoriaNro.crear(archivo,'J');
+            memoriaPalo.crear(archivo,'P');
+            memoriaNro.liberar();
+            memoriaPalo.liberar();
+            finJuego.liberar();
+            turnoJugador.liberar();
+            delete mazo;
+            exit(0);
         }
-        semaforosCreacion.eliminar(0);
-        semaforosJugadores.eliminar(0);
-        MemoriaComp<int> memoriaNro;
-        MemoriaComp<int> memoriaPalo;
-        memoriaNro.crear(archivo,'J');
-        memoriaPalo.crear(archivo,'P');
-        memoriaNro.liberar();
-        memoriaPalo.liberar();
-        finJuego.liberar();
-        turnoJugador.liberar();
-        delete mazo;
-        exit(0);
     }
 }
 

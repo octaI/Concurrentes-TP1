@@ -153,8 +153,10 @@ void Jugador::jugar() {
         }else if (finJuego.leer() == 0) {
 
             // Jugar
-
             Carta* jugada = jugarCarta();
+
+            // Avisar al arbitro que puede consultar cantidad de cartas de los jugadores
+            semaforoArbitro->signal();
 
             elegirSemaforosParaModificar(jugadoresQueDebenEsperar,cantJugadores,nro);
             semaforosJugadores->multiple_signal(jugadoresQueDebenEsperar,valores,cantJugadores-1); //levanto a los 3 espectadores
@@ -218,7 +220,9 @@ Carta* Jugador::jugarCarta() {
     }
 
     if (estadoMemoriaCantCartas == SHM_OK) {
-        memoriaCantCartas.escribir ( (int) cartasEnPilon->size() );
+        int cantCartas = (int) cartasEnPilon->size();
+        memoriaCantCartas.escribir (cantCartas);
+        Logger::getInstance () -> debug ( "Jugador " + to_string(nro), "ESCRIBO la cant de cartas del pilon a MEM COMP: " + to_string(cantCartas) );
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para la cantidad de cartas del pilon del jugador. Nro error: " + to_string(estadoMemoriaCantCartas) );
     }

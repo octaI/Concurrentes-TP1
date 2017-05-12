@@ -13,8 +13,6 @@ void Arbitro::iniciar() {
         consultarJugadores();
     }
     Logger :: getInstance() -> debug ( "Árbitro", "Terminó la partida, el árbitro se retira" );
-
-    shMemCantCartasJugadores.liberar();
     exit(0);
 }
 
@@ -39,4 +37,8 @@ void Arbitro::consultarJugadores() {
                                                  "Error nro: " + to_string(resultadoShMemCantCartasJugadores));
         }
     }
+}
+
+Arbitro::~Arbitro() {
+    shMemCantCartasJugadores.liberar();
 }

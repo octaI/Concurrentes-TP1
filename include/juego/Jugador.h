@@ -21,6 +21,7 @@ private:
     int nro;
     int cantJugadores;
     Semaforo* semaforosJugadores;
+    Semaforo* semaforoArbitro;
     string archivo;
     MemoriaComp<int> turnoActual;
     MemoriaComp<int> nroVuelta;
@@ -36,7 +37,7 @@ private:
 
     void limpiarPilon(stack<Carta*>* pilon);
 public:
-    Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores);
+    Jugador(int nro, int cantJugadores, Semaforo* semaforosJugadores, Semaforo* semaforoArbitro);
     ~Jugador();
 
     Jugador& operator= (const Jugador& origen);

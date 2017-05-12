@@ -12,6 +12,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     string archivo("../src/juego/Jugador.cpp");
     MemoriaComp<int> turnoJugador;
     MemoriaComp<int> finJuego;
+    MemoriaComp<int> cantCartasJugadores;
     finJuego.crear(archivo,'E');
     finJuego.escribir(0);
     int resultado = turnoJugador.crear(archivo,'T');
@@ -25,6 +26,10 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
     std::fill_n(valoresInicialesJugadores, nroJugadores, 0);    // inicializados en 0
     Semaforo semaforosJugadores ( "Atrevido.cpp", 'j', valoresInicialesJugadores, nroJugadores+1 );
     Semaforo semaforosCreacion("Atrevido.cpp",'c',valoresInicialesCreacion,nroJugadores);
+
+    // Semaforo de arbitro
+    int valorInicialArbitro [1] = {0};
+    Semaforo semaforoArbitro ( "Arbitro.cpp", 'a', valorInicialArbitro );
 
     unsigned short  i;
     pid_t pid;
@@ -43,7 +48,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                      "Se creo correctamente el proceso para el jugador " + to_string(1) +
                                      " con pid " + to_string(getpid())
                                      + " (padre: " + to_string(getppid()) + ")");
-        jugador = new Jugador( 1, nroJugadores, &semaforosJugadores);
+        jugador = new Jugador( 1, nroJugadores, &semaforosJugadores, &semaforoArbitro );
         jugador->obtenerPilon(pilones->at(0));
         semaforosCreacion.signal(1);
         semaforosCreacion.wait(0,nroJugadores);
@@ -62,7 +67,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
                                              "Se creo correctamente el proceso para el jugador " + to_string(i + 1) +
                                              " con pid " + to_string(getpid())
                                              + " (padre: " + to_string(getppid()) + ")");
-                jugador = new Jugador(i + 1, nroJugadores, &semaforosJugadores);
+                jugador = new Jugador(i + 1, nroJugadores, &semaforosJugadores, &semaforoArbitro );
                 jugador->obtenerPilon(pilones->at(i));
 
                 semaforosCreacion.signal(i+1);

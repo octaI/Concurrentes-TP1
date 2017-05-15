@@ -1,3 +1,4 @@
+#include <fstream>
 #include "../../include/juego/Jugador.h"
 
 
@@ -64,6 +65,14 @@ void Jugador::limpiarPilon(stack<Carta*>* pilon){
     }
 }
 
+void Jugador::escribirNroJugador(){
+    LockFile lock ("../logs/accion.txt");
+    lock.tomarLock();
+    const string log = to_string(nro) + "\n";
+    ssize_t resultado = lock.escribir ( static_cast<const void *>(log.c_str()), log.size() );
+    lock.liberarLock();
+}
+
 void Jugador::analizarCarta(){
     semaforosJugadores->wait(cantJugadores,1);
 
@@ -74,7 +83,6 @@ void Jugador::analizarCarta(){
     int estadoMemoriaNro = memoriaNro.crear(archivo, 'J');
     MemoriaComp<int> memoriaPalo;
     int estadoMemoriaPalo = memoriaPalo.crear(archivo, 'P');
-
 
     if ( estadoMemoriaNro == SHM_OK && estadoMemoriaPalo == SHM_OK) {
         int resultado = memoriaNro.leer();
@@ -94,7 +102,7 @@ void Jugador::analizarCarta(){
         // Creo la ultima carta jugada, que lei de memoria compartida:
         Carta* ultimaCartaJugada = new Carta(resultado, Palo(palo));
         pilonAuxiliar->push(ultimaCartaJugada);
-        cout << "Jugador NRO: " << nro << " con PILON PRINCIPAL tamanio = " << cartasEnPilon->size() << endl;
+        //cout << "Jugador NRO: " << nro << " con PILON PRINCIPAL tamanio = " << cartasEnPilon->size() << endl;
         Logger::getInstance() -> debug ( "Jugador " + to_string(nro), "Lei la carta nro: " +
                 to_string(resultado) + " de palo: " + to_string(palo) + " proveniente del jugador " +
                 to_string(turnoActual.leer()));
@@ -102,15 +110,31 @@ void Jugador::analizarCarta(){
         ultimaCartaJugada->accion(nro, nroAnteultimaCarta);
 
 
-        //Analizo si fui el ultimo y me llevo el pilon:
         int vueltaAnterior = nroVuelta.leer();
         nroVuelta.escribir(nroVuelta.leer() + 1);
         bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
+
+        //Analizo los jugadores que ya vi que jugaron en este turno:
+        if (vueltaAnterior == 0 && rondaEspecial){
+            escribirNroJugador();
+        }
+        else if (vueltaAnterior > 0 && rondaEspecial) {
+            ifstream file("../logs/accion.txt");
+            string str;
+            while (getline(file, str))
+            {
+                cout << "Jugador NRO: " << nro << " ya vi al jugador: " << str << " realizar la accion" << endl;
+            }
+            escribirNroJugador();
+        }
+
+        //Analizo si fui el ultimo y me llevo el pilon:
         if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
             Logger::getInstance()->debug("JUEGO", "ACABA DE TERMINAR UNA RONDA ESPECIAL");
             cout << endl;
             levantarPilonCentral();
+            remove("../logs/accion.txt");
         } else if (rondaEspecial){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();

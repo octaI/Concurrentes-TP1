@@ -127,7 +127,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
             }
 
             delete mazo;
-            delete arbitro;
+            //delete arbitro;
             exit(0);
         }
     }

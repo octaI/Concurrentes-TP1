@@ -35,6 +35,7 @@ private:
     void analizarCarta();
     bool esRondaEspecial(int nroUltimaCarta, int nroAnteultimaCarta);
     void levantarPilonCentral();
+    void escribirNroJugador();
 
     void limpiarPilon(stack<Carta*>* pilon);
 public:

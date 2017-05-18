@@ -111,6 +111,7 @@ void Atrevido::iniciarJugadores(const int nroJugadores) {
             }
             semaforosCreacion.eliminar(0);
             semaforosJugadores.eliminar(0);
+            semaforoArbitro.eliminar(0);
             MemoriaComp<int> memoriaNro;
             MemoriaComp<int> memoriaPalo;
             memoriaNro.crear(archivo,'J');

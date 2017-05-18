@@ -112,29 +112,38 @@ void Jugador::analizarCarta(){
 
         int vueltaAnterior = nroVuelta.leer();
         nroVuelta.escribir(nroVuelta.leer() + 1);
-        bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
 
-        //Analizo los jugadores que ya vi que jugaron en este turno:
-        if (vueltaAnterior == 0 && rondaEspecial){
+        //Analizo los jugadores que ya vi o escuche que jugaron en este turno:
+        bool rondaEscuchar = esRondaEscuchar(resultado);
+        bool rondaVer = esRondaVer(resultado);
+        if (vueltaAnterior == 0 && (rondaEscuchar || rondaVer)){
             escribirNroJugador();
         }
-        else if (vueltaAnterior > 0 && rondaEspecial) {
+        else if (vueltaAnterior > 0 && (rondaEscuchar || rondaVer)) {
             ifstream file("../logs/accion.txt");
             string str;
             while (getline(file, str))
             {
-                cout << "Jugador NRO: " << nro << " ya vi al jugador: " << str << " realizar la accion" << endl;
+                if (rondaEscuchar) {
+                    cout << "Jugador NRO: " << nro << " ya escuche al jugador: " << str << " decir la frase."
+                         << endl;
+                }
+                else if (rondaVer){
+                    cout << "Jugador NRO: " << nro << " ya vi al jugador: " << str << " realizar la venia."
+                         << endl;
+                }
+
             }
             escribirNroJugador();
         }
 
         //Analizo si fui el ultimo y me llevo el pilon:
+        bool rondaEspecial = esRondaEspecial(resultado, nroAnteultimaCarta);
         if (vueltaAnterior == (cantJugadores - 1) && rondaEspecial) {
             cout << "ACABA DE TERMINAR UNA RONDA ESPECIAL - SE ACTUALIZAN PILONES" << endl;
             Logger::getInstance()->debug("JUEGO", "ACABA DE TERMINAR UNA RONDA ESPECIAL");
             cout << endl;
             levantarPilonCentral();
-            remove("../logs/accion.txt");
         } else if (rondaEspecial){
             while (!pilonAuxiliar->empty()) {
                 Carta *carta = pilonAuxiliar->top();
@@ -142,6 +151,10 @@ void Jugador::analizarCarta(){
                 delete carta;
             }
         }
+
+        //El ultimo jugador del turno borra archivo de accion de jugadores:
+        if (vueltaAnterior == (cantJugadores - 1)) { remove("../logs/accion.txt"); }
+
         semaforosJugadores->signal(cantJugadores,1);
     } else {
         Logger :: getInstance() -> error ( "Jugador " + to_string(nro), "No se pudo crear la memoria compartida para el numero de carta. Nro error: " + to_string(estadoMemoriaNro) );
@@ -151,6 +164,20 @@ void Jugador::analizarCarta(){
 
 bool Jugador::esRondaEspecial(int nroUltimaCarta, int nroAnteultimaCarta){
     if (nroUltimaCarta == 7 || nroUltimaCarta == nroAnteultimaCarta){
+        return true;
+    }
+    return false;
+}
+
+bool Jugador::esRondaEscuchar(int nroUltimaCarta){
+    if (nroUltimaCarta == 7 || nroUltimaCarta == 10 || nroUltimaCarta == 11){
+        return true;
+    }
+    return false;
+}
+
+bool Jugador::esRondaVer(int nroUltimaCarta){
+    if (nroUltimaCarta == 12){
         return true;
     }
     return false;

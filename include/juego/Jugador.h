@@ -34,6 +34,8 @@ private:
     void esperarTurno();
     void analizarCarta();
     bool esRondaEspecial(int nroUltimaCarta, int nroAnteultimaCarta);
+    bool esRondaEscuchar(int nroUltimaCarta);
+    bool esRondaVer(int nroUltimaCarta);
     void levantarPilonCentral();
     void escribirNroJugador();
 
